@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Dashboard SPMB - DataSekolah' }}</title>
+    <title>{{ $title ?? 'Dashboard SPMB - Dashcool' }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Google Fonts (Instrument Sans / Inter) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -52,11 +56,9 @@
             <!-- Mobile Sidebar Header -->
             <div class="h-16 flex items-center justify-between px-6 border-b border-gray-100">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200">
-                        DS
-                    </div>
+                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0" alt="Dashcool Logo">
                     <div>
-                        <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">DataSekolah</h1>
+                        <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">Dashcool</h1>
                         <span class="text-xs text-indigo-600 font-semibold">Sistem Informasi</span>
                     </div>
                 </div>
@@ -80,7 +82,7 @@
                          alt="Avatar Admin">
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-semibold text-gray-900 truncate">Admin Sekolah</p>
-                        <p class="text-xs text-gray-500 truncate">admin@datasekolah.sch.id</p>
+                        <p class="text-xs text-gray-500 truncate">admin@dashcool.sch.id</p>
                     </div>
                 </div>
             </div>
@@ -92,12 +94,10 @@
             
             <!-- Sidebar Header -->
             <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-between">
-                <a href="{{ route('spmb.index') }}" class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-9 h-9 flex-shrink-0 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200">
-                        DS
-                    </div>
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 overflow-hidden">
+                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0" alt="Dashcool Logo">
                     <div x-show="!isCollapsed" x-transition class="truncate">
-                        <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">DataSekolah</h1>
+                        <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">Dashcool</h1>
                         <span class="text-xs text-indigo-600 font-semibold">Sistem Informasi</span>
                     </div>
                 </a>
@@ -304,7 +304,7 @@
             <!-- FOOTER -->
             <footer class="mt-auto border-t border-gray-200/60 bg-white py-4 px-4 sm:px-6 lg:px-8">
                 <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-                    <p>&copy; {{ date('Y') }} DataSekolah - Sistem Informasi Penerimaan Murid Baru Online</p>
+                    <p>&copy; {{ date('Y') }} Dashcool - Sistem Informasi Penerimaan Murid Baru Online</p>
                     <p class="text-gray-400">Versi 2.4.0 &bull; Modul SPMB v1.0</p>
                 </div>
             </footer>

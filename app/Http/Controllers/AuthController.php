@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -13,25 +14,36 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Simple mock authentication for testing UI
-        if ($request->email === 'admin@datasekolah.sch.id' && $request->password === 'password') {
-            session(['user' => ['name' => 'Administrator Utama', 'email' => $request->email, 'role' => 'Super Admin']]);
-            return redirect()->route('dashboard')->with('success', 'Selamat datang kembali, Administrator!');
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+            session(['user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role ?? 'Administrator'
+            ]]);
+
+            return redirect()->intended(route('dashboard'))
+                ->with('success', "Selamat datang kembali, {$user->name}!");
         }
 
-        // Allow any login in demo environment for convenience
-        session(['user' => ['name' => 'Admin Sekolah', 'email' => $request->email, 'role' => 'Panitia SPMB']]);
-        return redirect()->route('dashboard')->with('success', 'Berhasil masuk ke Sistem DataSekolah.');
+        return back()->withErrors([
+            'email' => 'Kombinasi email dan kata sandi tidak cocok.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
     {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         session()->forget('user');
+
         return redirect()->route('login')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 }

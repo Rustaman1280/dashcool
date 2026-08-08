@@ -3,7 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Portal - DataSekolah</title>
+    <title>Login Portal - Dashcool</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
@@ -26,10 +30,8 @@
         
         <!-- HEADER / BRANDING -->
         <div class="text-center">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white font-extrabold text-2xl shadow-xl shadow-indigo-600/30 mb-4">
-                DS
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:text-3xl">DataSekolah</h1>
+            <img src="{{ asset('logo.webp') }}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain mx-auto mb-3 drop-shadow-sm" alt="Dashcool Logo">
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:text-3xl">Dashcool</h1>
             <p class="mt-2 text-sm text-gray-500">Sistem Informasi Manajemen Sekolah Terpadu</p>
         </div>
 
@@ -82,10 +84,10 @@
                         <input type="email" 
                                id="email" 
                                name="email" 
-                               value="{{ old('email', 'admin@datasekolah.sch.id') }}" 
+                               value="{{ old('email', 'admin@dashcool.sch.id') }}" 
                                required 
                                autofocus 
-                               placeholder="nama@datasekolah.sch.id"
+                               placeholder="nama@dashcool.sch.id"
                                class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all text-gray-900 placeholder-gray-400">
                     </div>
                 </div>
@@ -148,7 +150,7 @@
             <div class="mt-6 pt-5 border-t border-gray-100 bg-gray-50/70 -mx-8 -mb-8 p-6 rounded-b-2xl">
                 <p class="text-xs font-bold text-gray-700 mb-1">Akun Demo Administrator:</p>
                 <div class="text-xs text-gray-500 space-y-0.5 font-mono">
-                    <p><span class="text-gray-400">Email:</span> admin@datasekolah.sch.id</p>
+                    <p><span class="text-gray-400">Email:</span> admin@dashcool.sch.id</p>
                     <p><span class="text-gray-400">Password:</span> password</p>
                 </div>
             </div>
@@ -156,7 +158,7 @@
 
         <!-- FOOTER -->
         <p class="text-center text-xs text-gray-400">
-            &copy; {{ date('Y') }} DataSekolah. All rights reserved.
+            &copy; {{ date('Y') }} Dashcool. All rights reserved.
         </p>
     </div>
 </body>

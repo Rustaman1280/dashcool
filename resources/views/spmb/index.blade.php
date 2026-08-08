@@ -24,7 +24,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Lihat Semua Pendaftar
+                Lihat Semua Pendaftar ({{ $totalCount }})
             </a>
             <a href="{{ route('spmb.pengaturan') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 border border-indigo-400/30 text-white text-xs sm:text-sm font-semibold backdrop-blur-sm transition-all">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -155,12 +155,12 @@
     <!-- RECENT APPLICANTS TABLE SECTION -->
     <x-data-table 
         title="Pendaftar Terbaru" 
-        subtitle="5-10 transaksi pendaftaran siswa paling akhir masuk ke sistem"
+        subtitle="Transaksi pendaftaran siswa paling akhir masuk ke database"
         :headers="['No. Pendaftaran', 'Nama & NISN', 'Asal Sekolah', 'Jalur', 'Status Verifikasi', 'Tanggal Daftar', 'Aksi']"
     >
         <x-slot name="action">
             <a href="{{ route('spmb.pendaftar') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                Lihat Semua Data (1,248)
+                Lihat Semua Data ({{ $totalCount }})
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
@@ -170,51 +170,49 @@
         @foreach ($pendaftarTerbaru as $p)
             <tr class="hover:bg-gray-50/80 transition-colors">
                 <td class="px-6 py-4 font-mono text-xs font-semibold text-indigo-600">
-                    {{ $p['no_pendaftaran'] }}
+                    {{ $p->no_pendaftaran }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-700 font-bold flex items-center justify-center text-xs flex-shrink-0 border border-gray-200">
-                            {{ strtoupper(substr($p['nama'], 0, 2)) }}
+                            {{ strtoupper(substr($p->nama_lengkap, 0, 2)) }}
                         </div>
                         <div>
-                            <div class="font-semibold text-gray-900">{{ $p['nama'] }}</div>
-                            <div class="text-xs text-gray-400 font-mono">NISN: {{ $p['nisn'] }}</div>
+                            <div class="font-semibold text-gray-900">{{ $p->nama_lengkap }}</div>
+                            <div class="text-xs text-gray-400 font-mono">NISN: {{ $p->nisn }}</div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 text-xs font-medium text-gray-700 whitespace-nowrap">
-                    {{ $p['asal_sekolah'] }}
+                    {{ $p->asal_sekolah }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        {{ $p['jalur'] }}
+                        {{ $p->jalur->nama_jalur ?? 'Reguler' }}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :status="$p['status']" />
+                    <x-status-badge :status="$p->status" />
                 </td>
                 <td class="px-6 py-4 text-xs text-gray-500 whitespace-nowrap">
-                    {{ $p['tanggal'] }}
+                    {{ $p->created_at->translatedFormat('d M Y, H:i') }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('spmb.detail', $p['id']) }}" 
-                           class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors font-semibold">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 123c2.7 5.485 8.04 9 14.214 9 6.173 0 11.514-3.515 14.214-9-2.7-5.486-8.04-9-14.214-9-6.174 0-11.514 3.514-14.214 9z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Detail
-                        </a>
-                    </div>
+                    <a href="{{ route('spmb.detail', $p->id) }}" 
+                       class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors font-semibold">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 123c2.7 5.485 8.04 9 14.214 9 6.173 0 11.514-3.515 14.214-9-2.7-5.486-8.04-9-14.214-9-6.174 0-11.514 3.514-14.214 9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Detail
+                    </a>
                 </td>
             </tr>
         @endforeach
 
         <x-slot name="footer">
             <div class="flex items-center justify-between text-xs text-gray-500">
-                <span>Menampilkan 6 pendaftar terbaru dari 1,248 total data</span>
+                <span>Menampilkan {{ count($pendaftarTerbaru) }} pendaftar terbaru dari {{ $totalCount }} total data</span>
                 <a href="{{ route('spmb.pendaftar') }}" class="font-semibold text-indigo-600 hover:underline">Kelola & Verifikasi Semua Pendaftar &rarr;</a>
             </div>
         </x-slot>
@@ -228,7 +226,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('spmbChart').getContext('2d');
         
-        // Gradient fill for indigo dataset
         const gradientIndigo = ctx.createLinearGradient(0, 0, 0, 300);
         gradientIndigo.addColorStop(0, 'rgba(79, 70, 229, 0.25)');
         gradientIndigo.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
@@ -265,11 +262,7 @@
                             usePointStyle: true,
                             boxWidth: 8,
                             padding: 15,
-                            font: {
-                                family: "'Instrument Sans', sans-serif",
-                                size: 11,
-                                weight: '500'
-                            }
+                            font: { family: "'Instrument Sans', sans-serif", size: 11, weight: '500' }
                         }
                     },
                     tooltip: {
@@ -284,19 +277,12 @@
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: {
-                            font: { family: "'Instrument Sans', sans-serif", size: 11 },
-                            color: '#64748b'
-                        }
+                        ticks: { font: { family: "'Instrument Sans', sans-serif", size: 11 }, color: '#64748b' }
                     },
                     y: {
                         border: { dash: [4, 4] },
                         grid: { color: '#f1f5f9' },
-                        ticks: {
-                            font: { family: "'Instrument Sans', sans-serif", size: 11 },
-                            color: '#64748b',
-                            stepSize: 20
-                        }
+                        ticks: { font: { family: "'Instrument Sans', sans-serif", size: 11 }, color: '#64748b' }
                     }
                 }
             }

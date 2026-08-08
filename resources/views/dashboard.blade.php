@@ -14,7 +14,7 @@
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-300 text-xs font-semibold backdrop-blur-sm mb-3">
                     <span>Sistem Informasi Terpadu &bull; TA 2025/2026 Semester Ganjil</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang di DataSekolah</h1>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang di Dashcool</h1>
                 <p class="mt-2 text-sm text-slate-300 leading-relaxed">
                     Pusat kendali operasional sekolah. Pantau statistik siswa, penerimaan murid baru (SPMB), presensi kehadiran, hingga modul laporan secara terpadu.
                 </p>
@@ -157,7 +157,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
             <div>
                 <h3 class="text-base font-bold text-gray-900 mb-1">Status Integrasi Sistem</h3>
-                <p class="text-xs text-gray-500 mb-5">Kondisi layanan server DataSekolah</p>
+                <p class="text-xs text-gray-500 mb-5">Kondisi layanan server Dashcool</p>
 
                 <div class="space-y-4">
                     <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-50/60 border border-emerald-100">

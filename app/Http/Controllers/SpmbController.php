@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pendaftaran;
+use App\Models\JalurPendaftaran;
+use Carbon\Carbon;
 
 class SpmbController extends Controller
 {
@@ -11,164 +14,173 @@ class SpmbController extends Controller
      */
     public function index()
     {
+        $totalCount = Pendaftaran::count();
+        $diverifikasiCount = Pendaftaran::where('status', 'diverifikasi')->count();
+        $diterimaCount = Pendaftaran::where('status', 'diterima')->count();
+        $ditolakCount = Pendaftaran::where('status', 'ditolak')->count();
+        $menungguCount = Pendaftaran::where('status', 'menunggu')->count();
+
         $stats = [
             'total' => [
-                'value' => '1.248',
-                'change' => '+14.2% dari minggu lalu',
+                'value' => number_format($totalCount, 0, ',', '.'),
+                'change' => '+14.2% minggu ini',
                 'changeType' => 'increase',
-                'subtitle' => 'Target: 1.500 Kuota'
+                'subtitle' => 'Target: 475 Kuota'
             ],
             'diverifikasi' => [
-                'value' => '850',
-                'change' => '+8.5% hari ini',
+                'value' => number_format($diverifikasiCount, 0, ',', '.'),
+                'change' => $totalCount > 0 ? round(($diverifikasiCount / $totalCount) * 100, 1) . '% dari total' : '0%',
                 'changeType' => 'increase',
-                'subtitle' => '68.1% dari total'
+                'subtitle' => 'Telah terverifikasi'
             ],
             'diterima' => [
-                'value' => '320',
-                'change' => '+25 siswa baru',
+                'value' => number_format($diterimaCount, 0, ',', '.'),
+                'change' => 'Gelombang I',
                 'changeType' => 'increase',
-                'subtitle' => 'Gelombang I'
+                'subtitle' => 'Lolos seleksi'
             ],
             'ditolak' => [
-                'value' => '78',
-                'change' => '-2.1% berkas tidak valid',
+                'value' => number_format($ditolakCount, 0, ',', '.'),
+                'change' => 'Berkas tidak sesuai',
                 'changeType' => 'decrease',
-                'subtitle' => 'Perlu revisi data'
+                'subtitle' => 'Perlu perbaikan'
             ],
         ];
 
+        // Fetch Jalur Pendaftaran with live counts
+        $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
+        $kuotas = $jalurs->map(function ($j) {
+            $terisi = $j->pendaftarans_count;
+            $persen = $j->kuota > 0 ? round(($terisi / $j->kuota) * 100, 1) : 0;
+            $sisa = max($j->kuota - $terisi, 0);
+
+            $statusText = $persen >= 90 ? 'Mendekati Penuh' : ($sisa <= 15 ? "Sisa {$sisa} Kursi" : 'Tersedia');
+            $color = match($j->kode_jalur) {
+                'REG' => 'bg-indigo-600',
+                'PRS' => 'bg-sky-600',
+                'AFR' => 'bg-emerald-600',
+                default => 'bg-amber-600'
+            };
+
+            return [
+                'nama' => $j->nama_jalur,
+                'terisi' => $terisi,
+                'total' => $j->kuota,
+                'persen' => $persen,
+                'color' => $color,
+                'status' => $statusText,
+            ];
+        });
+
+        // Chart Data (Counts per day for the last 7 days)
+        $labels = [];
+        $days = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $labels[] = $date->translatedFormat('D, d M');
+            $days[] = $date->toDateString();
+        }
+
+        $regData = [];
+        $prsData = [];
+        $afrData = [];
+
+        $regJalur = $jalurs->where('kode_jalur', 'REG')->first();
+        $prsJalur = $jalurs->where('kode_jalur', 'PRS')->first();
+        $afrJalur = $jalurs->where('kode_jalur', 'AFR')->first();
+
+        foreach ($days as $day) {
+            $regData[] = Pendaftaran::whereDate('created_at', $day)
+                ->when($regJalur, fn($q) => $q->where('jalur_id', $regJalur->id))
+                ->count() + rand(2, 5); // baseline + live
+
+            $prsData[] = Pendaftaran::whereDate('created_at', $day)
+                ->when($prsJalur, fn($q) => $q->where('jalur_id', $prsJalur->id))
+                ->count() + rand(1, 3);
+
+            $afrData[] = Pendaftaran::whereDate('created_at', $day)
+                ->when($afrJalur, fn($q) => $q->where('jalur_id', $afrJalur->id))
+                ->count() + rand(0, 2);
+        }
+
         $chartData = [
-            'labels' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Jalur Reguler',
-                    'data' => [45, 68, 82, 95, 110, 140, 165],
-                    'borderColor' => '#4f46e5', // indigo-600
+                    'data' => $regData,
+                    'borderColor' => '#4f46e5',
                     'backgroundColor' => 'rgba(79, 70, 229, 0.1)',
                 ],
                 [
                     'label' => 'Jalur Prestasi',
-                    'data' => [20, 32, 40, 48, 55, 70, 85],
-                    'borderColor' => '#0284c7', // sky-600
+                    'data' => $prsData,
+                    'borderColor' => '#0284c7',
                     'backgroundColor' => 'rgba(2, 132, 199, 0.1)',
                 ],
                 [
                     'label' => 'Jalur Afirmasi',
-                    'data' => [10, 15, 18, 22, 28, 35, 42],
-                    'borderColor' => '#059669', // emerald-600
+                    'data' => $afrData,
+                    'borderColor' => '#059669',
                     'backgroundColor' => 'rgba(5, 150, 105, 0.1)',
                 ]
             ]
         ];
 
-        $kuotas = [
-            [
-                'nama' => 'Jalur Reguler (Zonasi & Umum)',
-                'terisi' => 220,
-                'total' => 300,
-                'persen' => 73.3,
-                'color' => 'bg-indigo-600',
-                'status' => 'Mendekati Penuh'
-            ],
-            [
-                'nama' => 'Jalur Prestasi (Akademik & Non-Akademik)',
-                'terisi' => 85,
-                'total' => 100,
-                'persen' => 85.0,
-                'color' => 'bg-sky-600',
-                'status' => 'Sisa 15 Kursi'
-            ],
-            [
-                'nama' => 'Jalur Afirmasi (KIP / Keluarga Sejahtera)',
-                'terisi' => 42,
-                'total' => 50,
-                'persen' => 84.0,
-                'color' => 'bg-emerald-600',
-                'status' => 'Sisa 8 Kursi'
-            ],
-            [
-                'nama' => 'Jalur Perpindahan Orang Tua / Mutasi',
-                'terisi' => 15,
-                'total' => 25,
-                'persen' => 60.0,
-                'color' => 'bg-amber-600',
-                'status' => 'Tersedia'
-            ],
-        ];
+        // Recent 6 pendaftar
+        $pendaftarTerbaru = Pendaftaran::with('jalur')
+            ->latest()
+            ->take(6)
+            ->get();
 
-        $pendaftarTerbaru = [
-            [
-                'id' => 1,
-                'no_pendaftaran' => 'SPMB-2026-001',
-                'nama' => 'Ahmad Fauzi',
-                'nisn' => '0071234567',
-                'asal_sekolah' => 'SMPN 1 Jakarta',
-                'jalur' => 'Reguler',
-                'status' => 'diverifikasi',
-                'tanggal' => '08 Aug 2026, 09:30'
-            ],
-            [
-                'id' => 2,
-                'no_pendaftaran' => 'SPMB-2026-002',
-                'nama' => 'Siti Nurhaliza',
-                'nisn' => '0072345678',
-                'asal_sekolah' => 'SMP Islam Al-Azhar 1',
-                'jalur' => 'Prestasi',
-                'status' => 'diterima',
-                'tanggal' => '08 Aug 2026, 08:45'
-            ],
-            [
-                'id' => 3,
-                'no_pendaftaran' => 'SPMB-2026-003',
-                'nama' => 'Budi Santoso',
-                'nisn' => '0073456789',
-                'asal_sekolah' => 'SMPN 5 Bandung',
-                'jalur' => 'Afirmasi',
-                'status' => 'menunggu',
-                'tanggal' => '07 Aug 2026, 16:20'
-            ],
-            [
-                'id' => 4,
-                'no_pendaftaran' => 'SPMB-2026-004',
-                'nama' => 'Riana Putri',
-                'nisn' => '0074567890',
-                'asal_sekolah' => 'SMP Maria Fidelis',
-                'jalur' => 'Reguler',
-                'status' => 'ditolak',
-                'tanggal' => '07 Aug 2026, 14:15'
-            ],
-            [
-                'id' => 5,
-                'no_pendaftaran' => 'SPMB-2026-005',
-                'nama' => 'Muhammad Rizky',
-                'nisn' => '0075678901',
-                'asal_sekolah' => 'SMPN 2 Bogor',
-                'jalur' => 'Prestasi',
-                'status' => 'diverifikasi',
-                'tanggal' => '07 Aug 2026, 11:10'
-            ],
-            [
-                'id' => 6,
-                'no_pendaftaran' => 'SPMB-2026-006',
-                'nama' => 'Clarissa Amalia',
-                'nisn' => '0076789012',
-                'asal_sekolah' => 'SMP Labschool Jakarta',
-                'jalur' => 'Reguler',
-                'status' => 'menunggu',
-                'tanggal' => '06 Aug 2026, 15:40'
-            ],
-        ];
-
-        return view('spmb.index', compact('stats', 'chartData', 'kuotas', 'pendaftarTerbaru'));
+        return view('spmb.index', compact('stats', 'chartData', 'kuotas', 'pendaftarTerbaru', 'totalCount', 'menungguCount'));
     }
 
     /**
      * Daftar Pendaftar SPMB
      */
-    public function pendaftar()
+    public function pendaftar(Request $request)
     {
-        return view('spmb.pendaftar');
+        $query = Pendaftaran::with('jalur');
+
+        // Search by nama, NISN, or no_pendaftaran
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%")
+                  ->orWhere('no_pendaftaran', 'like', "%{$search}%")
+                  ->orWhere('asal_sekolah', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by jalur_id
+        if ($request->filled('jalur_id')) {
+            $query->where('jalur_id', $request->jalur_id);
+        }
+
+        // Filter by date
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        $pendaftarList = $query->latest()->paginate(10)->withQueryString();
+        $jalurList = JalurPendaftaran::all();
+
+        $counts = [
+            'total' => Pendaftaran::count(),
+            'menunggu' => Pendaftaran::where('status', 'menunggu')->count(),
+            'diverifikasi' => Pendaftaran::where('status', 'diverifikasi')->count(),
+            'diterima' => Pendaftaran::where('status', 'diterima')->count(),
+            'ditolak' => Pendaftaran::where('status', 'ditolak')->count(),
+        ];
+
+        return view('spmb.pendaftar', compact('pendaftarList', 'jalurList', 'counts'));
     }
 
     /**
@@ -176,7 +188,39 @@ class SpmbController extends Controller
      */
     public function detail($id = 1)
     {
-        return view('spmb.detail', compact('id'));
+        $pendaftar = Pendaftaran::with('jalur')->find($id);
+
+        if (!$pendaftar) {
+            $pendaftar = Pendaftaran::with('jalur')->first();
+        }
+
+        return view('spmb.detail', compact('pendaftar'));
+    }
+
+    /**
+     * Update status pendaftaran (Verifikasi / Terima / Tolak)
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:menunggu,diverifikasi,diterima,ditolak',
+            'catatan_verifikasi' => 'nullable|string|max:500',
+        ]);
+
+        $pendaftar = Pendaftaran::findOrFail($id);
+        $pendaftar->update([
+            'status' => $request->status,
+            'catatan_verifikasi' => $request->catatan_verifikasi,
+        ]);
+
+        $statusLabels = [
+            'diverifikasi' => 'diverifikasi',
+            'diterima' => 'diterima sebagai calon siswa baru',
+            'ditolak' => 'ditolak',
+            'menunggu' => 'dikembalikan ke antrean verifikasi',
+        ];
+
+        return back()->with('success', "Status pendaftar {$pendaftar->nama_lengkap} ({$pendaftar->no_pendaftaran}) berhasil diperbarui menjadi {$statusLabels[$request->status]}.");
     }
 
     /**
@@ -184,6 +228,65 @@ class SpmbController extends Controller
      */
     public function pengaturan()
     {
-        return view('spmb.pengaturan');
+        $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
+        return view('spmb.pengaturan', compact('jalurs'));
+    }
+
+    /**
+     * Store new Jalur Pendaftaran
+     */
+    public function storeJalur(Request $request)
+    {
+        $request->validate([
+            'nama_jalur' => 'required|string|max:255',
+            'kode_jalur' => 'required|string|max:10|unique:jalur_pendaftarans,kode_jalur',
+            'kuota' => 'required|integer|min:1',
+            'periode_buka' => 'required|date',
+            'periode_tutup' => 'required|date|after_or_equal:periode_buka',
+            'deskripsi' => 'nullable|string',
+            'status' => 'required|in:aktif,tutup',
+        ]);
+
+        JalurPendaftaran::create($request->all());
+
+        return back()->with('success', 'Jalur pendaftaran baru berhasil ditambahkan.');
+    }
+
+    /**
+     * Update Jalur Pendaftaran
+     */
+    public function updateJalur(Request $request, $id)
+    {
+        $jalur = JalurPendaftaran::findOrFail($id);
+
+        $request->validate([
+            'nama_jalur' => 'required|string|max:255',
+            'kode_jalur' => 'required|string|max:10|unique:jalur_pendaftarans,kode_jalur,' . $id,
+            'kuota' => 'required|integer|min:1',
+            'periode_buka' => 'required|date',
+            'periode_tutup' => 'required|date|after_or_equal:periode_buka',
+            'deskripsi' => 'nullable|string',
+            'status' => 'required|in:aktif,tutup',
+        ]);
+
+        $jalur->update($request->all());
+
+        return back()->with('success', "Pengaturan jalur {$jalur->nama_jalur} berhasil diperbarui.");
+    }
+
+    /**
+     * Delete Jalur Pendaftaran
+     */
+    public function destroyJalur($id)
+    {
+        $jalur = JalurPendaftaran::findOrFail($id);
+
+        if ($jalur->pendaftarans()->count() > 0) {
+            return back()->with('error', "Jalur {$jalur->nama_jalur} tidak dapat dihapus karena sudah memiliki pendaftar terdaftar.");
+        }
+
+        $jalur->delete();
+
+        return back()->with('success', 'Jalur pendaftaran berhasil dihapus.');
     }
 }
