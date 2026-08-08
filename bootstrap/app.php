@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsAuthenticated;
+use App\Http\Middleware\EnsureUserIsGuest;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+        ]);
+
+        $middleware->alias([
+            'auth.custom' => EnsureUserIsAuthenticated::class,
+            'guest.custom' => EnsureUserIsGuest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
