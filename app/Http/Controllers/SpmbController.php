@@ -431,7 +431,10 @@ class SpmbController extends Controller
         $teralokasi = Pendaftaran::where('status', 'diterima')->whereNotNull('kelas')->where('kelas', '!=', '')->count();
         $belumAlokasi = $totalDiterima - $teralokasi;
 
-        $daftarKelas = ['X IPA 1', 'X IPA 2', 'X IPS 1', 'X IPS 2', 'VII A', 'VII B', 'VII C', 'X RPL 1', 'X TITL 1'];
+        $existingKelas = Pendaftaran::whereNotNull('kelas')->where('kelas', '!=', '')->pluck('kelas')->toArray();
+        $defaultKelas = ['X IPA 1', 'X IPA 2', 'X IPS 1', 'X IPS 2', 'VII A', 'VII B', 'VII C', 'X RPL 1', 'X TITL 1'];
+        $daftarKelas = array_values(array_unique(array_merge($defaultKelas, $existingKelas)));
+        sort($daftarKelas);
 
         return view('spmb.kelas', compact('diterimaList', 'totalDiterima', 'teralokasi', 'belumAlokasi', 'daftarKelas'));
     }
