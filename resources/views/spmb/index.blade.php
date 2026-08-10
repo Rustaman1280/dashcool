@@ -5,8 +5,11 @@
 @endphp
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-6">
     
+    <!-- SUB NAVIGATION BAR -->
+    @include('spmb.partials.nav')
+
     <!-- PAGE TITLE & QUICK ACTIONS BANNER -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10">
         <div>

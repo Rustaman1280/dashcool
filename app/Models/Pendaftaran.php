@@ -35,6 +35,7 @@ class Pendaftaran extends Model
         'jalur_id',
         'status',
         'catatan_verifikasi',
+        'kelas',
         'dokumen',
     ];
 

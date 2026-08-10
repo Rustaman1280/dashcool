@@ -7,6 +7,9 @@
 @section('content')
 <div class="space-y-6" x-data="{ quickModalOpen: false, selectedPendaftar: null, selectedStatus: '' }">
     
+    <!-- SUB NAVIGATION BAR -->
+    @include('spmb.partials.nav')
+
     <!-- PAGE HEADER -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -15,11 +18,17 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <a href="{{ route('spmb.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                + Input Pendaftar Baru
+            </a>
             <a href="{{ route('spmb.index') }}" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
                 <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
-                Kembali ke Dashboard
+                Dashboard
             </a>
         </div>
     </div>
@@ -152,6 +161,13 @@
                 <!-- STATUS BADGE -->
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :status="$p->status" />
+                    @if ($p->status === 'diterima' && $p->kelas)
+                        <div class="mt-1">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                {{ $p->kelas }}
+                            </span>
+                        </div>
+                    @endif
                 </td>
 
                 <!-- TANGGAL DAFTAR -->

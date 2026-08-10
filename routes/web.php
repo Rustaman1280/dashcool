@@ -29,16 +29,29 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::prefix('spmb')->name('spmb.')->group(function () {
         Route::get('/', [SpmbController::class, 'index'])->name('index');
         
-        // Pendaftar Routes
+        // 1. Input SPMB Pendaftar Routes
+        Route::get('/input', [SpmbController::class, 'create'])->name('create');
+        Route::post('/input', [SpmbController::class, 'store'])->name('store');
+
+        // 2. Data & Verifikasi Pendaftar Routes
         Route::get('/pendaftar', [SpmbController::class, 'pendaftar'])->name('pendaftar');
         Route::get('/pendaftar/{id}', [SpmbController::class, 'detail'])->name('detail');
         Route::post('/pendaftar/{id}/status', [SpmbController::class, 'updateStatus'])->name('pendaftar.status');
 
-        // Pengaturan Jalur & Kuota Routes
+        // 3. Rekap SPMB Routes
+        Route::get('/rekap', [SpmbController::class, 'rekap'])->name('rekap');
+        Route::get('/rekap/export', [SpmbController::class, 'exportRekap'])->name('rekap.export');
+
+        // 4. Update Kelas SPMB Routes
+        Route::get('/update-kelas', [SpmbController::class, 'kelas'])->name('kelas');
+        Route::post('/update-kelas', [SpmbController::class, 'updateKelas'])->name('kelas.update');
+
+        // 5. Set SPMB & Pengaturan Jalur Routes
         Route::get('/pengaturan', [SpmbController::class, 'pengaturan'])->name('pengaturan');
         Route::post('/pengaturan', [SpmbController::class, 'storeJalur'])->name('pengaturan.store');
         Route::put('/pengaturan/{id}', [SpmbController::class, 'updateJalur'])->name('pengaturan.update');
         Route::delete('/pengaturan/{id}', [SpmbController::class, 'destroyJalur'])->name('pengaturan.destroy');
+        Route::post('/pengaturan/sistem', [SpmbController::class, 'updateSistem'])->name('pengaturan.sistem');
     });
 
 });

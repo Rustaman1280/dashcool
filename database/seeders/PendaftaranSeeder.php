@@ -73,6 +73,7 @@ class PendaftaranSeeder extends Seeder
                 'jalur_id' => $prs ? $prs->id : 2,
                 'status' => 'diterima',
                 'catatan_verifikasi' => 'Juara 1 Olimpiade Matematika Tingkat Kota.',
+                'kelas' => 'X IPA 1',
                 'dokumen' => [
                     'kartu_keluarga' => 'kk_siti.pdf',
                     'akta_kelahiran' => 'akta_siti.pdf',
@@ -227,6 +228,7 @@ class PendaftaranSeeder extends Seeder
                 'jalur_id' => $mts ? $mts->id : 4,
                 'status' => 'diterima',
                 'catatan_verifikasi' => 'SK Mutasi Tugas Orang Tua SK/2026/04 terverifikasi.',
+                'kelas' => 'X IPS 1',
                 'dokumen' => [
                     'kartu_keluarga' => 'kk_dewa.pdf',
                     'sk_mutasi' => 'sk_mutasi_sudira.pdf',

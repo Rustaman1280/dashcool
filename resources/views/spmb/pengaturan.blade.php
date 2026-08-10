@@ -1,28 +1,115 @@
 @extends('layouts.app')
 
 @php
-    $headerTitle = 'Pengaturan Jalur & Kuota SPMB';
+    $headerTitle = 'Set SPMB - Pengaturan Sistem & Jalur Pendaftaran';
 @endphp
 
 @section('content')
-<div class="space-y-6" x-data="{ createModalOpen: false, editModalOpen: false, deleteModalOpen: false, selectedJalur: null }">
+<div class="space-y-8" x-data="{ createModalOpen: false, editModalOpen: false, deleteModalOpen: false, selectedJalur: null }">
     
-    <!-- PAGE HEADER -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- SUB NAVIGATION BAR -->
+    @include('spmb.partials.nav')
+
+    <!-- HEADER BANNER -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Pengaturan Jalur & Kuota Pendaftaran</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Atur alokasi kuota, periode tanggal buka-tutup, dan status aktif jalur SPMB.</p>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                Modul Konfigurasi Central SPMB
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Set SPMB & Pengaturan Jalur</h1>
+            <p class="mt-1 text-xs sm:text-sm text-indigo-200">Konfigurasi tahun ajaran, gelombang pendaftaran, syarat, pengumuman, dan kuota tiap jalur.</p>
         </div>
 
-        <button @click="createModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <button @click="createModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-indigo-900 hover:bg-indigo-50 font-bold text-xs sm:text-sm shadow-md transition-all">
+            <svg class="w-4 h-4 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Tambah Jalur Baru
         </button>
     </div>
 
-    <!-- SUMMARY CARDS -->
+    <!-- 1. FORM SET SPMB (PENGATURAN SISTEM GLOBAL) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div>
+                <h3 class="text-base font-bold text-gray-900">1. Set SPMB (Pengaturan Umum Sistem)</h3>
+                <p class="text-xs text-gray-500">Konfigurasi tahun ajaran, status pendaftaran, pengumuman, dan persyaratan</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+                {{ strtoupper($sistemSettings['status_spmb'] ?? 'AKTIF') }}
+            </span>
+        </div>
+
+        <form action="{{ route('spmb.pengaturan.sistem') }}" method="POST" class="space-y-5">
+            @csrf
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
+                    <input type="text" name="tahun_ajaran" value="{{ old('tahun_ajaran', $sistemSettings['tahun_ajaran'] ?? '2026/2027') }}" required 
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Gelombang Pendaftaran <span class="text-rose-500">*</span></label>
+                    <input type="text" name="gelombang" value="{{ old('gelombang', $sistemSettings['gelombang'] ?? 'Gelombang I') }}" required 
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Status Sistem SPMB <span class="text-rose-500">*</span></label>
+                    <select name="status_spmb" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <option value="aktif" {{ ($sistemSettings['status_spmb'] ?? 'aktif') == 'aktif' ? 'selected' : '' }}>BUKA / AKTIF</option>
+                        <option value="tutup" {{ ($sistemSettings['status_spmb'] ?? 'aktif') == 'tutup' ? 'selected' : '' }}>TUTUP / DIBATASI</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Total Target Kuota <span class="text-rose-500">*</span></label>
+                    <input type="number" name="total_kuota" value="{{ old('total_kuota', $sistemSettings['total_kuota'] ?? 475) }}" required min="1" 
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Tanggal Buka Pendaftaran <span class="text-rose-500">*</span></label>
+                    <input type="date" name="periode_buka" value="{{ old('periode_buka', $sistemSettings['periode_buka'] ?? '2026-01-01') }}" required 
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Tanggal Tutup Pendaftaran <span class="text-rose-500">*</span></label>
+                    <input type="date" name="periode_tutup" value="{{ old('periode_tutup', $sistemSettings['periode_tutup'] ?? '2026-08-30') }}" required 
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Teks Pengumuman Dashboard</label>
+                    <textarea name="pengumuman" rows="3" placeholder="Pesan pengumuman yang muncul pada portal pendaftaran..." 
+                              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">{{ old('pengumuman', $sistemSettings['pengumuman'] ?? '') }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Persyaratan & Dokumen Wajib</label>
+                    <textarea name="syarat" rows="3" placeholder="Daftar persyaratan yang wajib dipenuhi pendaftar..." 
+                              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">{{ old('syarat', $sistemSettings['syarat'] ?? '') }}</textarea>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end border-t border-gray-100 pt-3">
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition-all inline-flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    Simpan Pengaturan SPMB
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- SUMMARY CARDS JALUR -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
@@ -55,10 +142,10 @@
         </div>
     </div>
 
-    <!-- TABLE JALUR PENDAFTARAN -->
+    <!-- 2. TABLE JALUR PENDAFTARAN -->
     <x-data-table 
-        title="Daftar Jalur Pendaftaran & Status Kuota"
-        subtitle="Tabel pengelolaan jalur pendaftaran aktif sekolah"
+        title="2. Daftar Jalur Pendaftaran & Status Kuota"
+        subtitle="Tabel pengalokasian kuota per jalur pendaftaran"
         :headers="['Kode', 'Nama Jalur Pendaftaran', 'Kuota / Keterisian', 'Progress', 'Periode Buka - Tutup', 'Status', 'Aksi']"
     >
         @foreach ($jalurs as $j)
@@ -83,14 +170,14 @@
                 <td class="px-6 py-4 whitespace-nowrap w-48">
                     <div class="flex items-center gap-2">
                         <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                            <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ $persen }}%"></div>
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ min($persen, 100) }}%"></div>
                         </div>
                         <span class="text-xs font-bold text-gray-700">{{ $persen }}%</span>
                     </div>
                 </td>
 
                 <td class="px-6 py-4 text-xs text-gray-600 whitespace-nowrap">
-                    {{ $j->periode_buka ? $j->periode_buka->format('d M Y') : '-' }} s.d {{ $j->periode_tutup ? $j->periode_tutup->format('d M Y') : '-' }}
+                    {{ $j->periode_buka ? \Carbon\Carbon::parse($j->periode_buka)->format('d M Y') : '-' }} s.d {{ $j->periode_tutup ? \Carbon\Carbon::parse($j->periode_tutup)->format('d M Y') : '-' }}
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -99,30 +186,21 @@
                             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Aktif
                         </span>
                     @else
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 ring-1 ring-gray-600/20">
-                            <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span> Ditutup
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 ring-1 ring-rose-600/20">
+                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Tutup
                         </span>
                     @endif
                 </td>
 
-                <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
-                    <div class="flex items-center gap-2">
-                        <button @click="editModalOpen = true; selectedJalur = {{ json_encode($j) }}" 
-                                class="p-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors font-semibold"
-                                title="Edit Jalur">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                            </svg>
-                        </button>
-
-                        <button @click="deleteModalOpen = true; selectedJalur = {{ json_encode($j) }}" 
-                                class="p-1.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors font-semibold"
-                                title="Hapus Jalur">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                        </button>
-                    </div>
+                <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold space-x-2">
+                    <button @click="selectedJalur = {{ $j->toJson() }}; editModalOpen = true" 
+                            class="px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">
+                        Edit
+                    </button>
+                    <button @click="selectedJalur = {{ $j->toJson() }}; deleteModalOpen = true" 
+                            class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors">
+                        Hapus
+                    </button>
                 </td>
             </tr>
         @endforeach
@@ -145,7 +223,7 @@
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <h3 class="text-base font-bold text-gray-900">Tambah Jalur Pendaftaran Baru</h3>
                 <button @click="createModalOpen = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
@@ -155,22 +233,22 @@
                 <div class="grid grid-cols-3 gap-3">
                     <div class="col-span-2">
                         <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Nama Jalur</label>
-                        <input type="text" name="nama_jalur" required placeholder="Contoh: Jalur Tahfizh Al-Qur'an" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <input type="text" name="nama_jalur" required placeholder="Jalur Afirmasi / Prestasi" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Kode Jalur</label>
-                        <input type="text" name="kode_jalur" required placeholder="TFZ" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono uppercase focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <input type="text" name="kode_jalur" required placeholder="AFR" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono uppercase">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Kuota (Kursi)</label>
-                        <input type="number" name="kuota" required min="1" value="50" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <input type="number" name="kuota" required min="1" value="50" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-bold">
                     </div>
                     <div>
                         <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Status Jalur</label>
-                        <select name="status" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <select name="status" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold">
                             <option value="aktif">Aktif (Buka)</option>
                             <option value="tutup">Tutup</option>
                         </select>
@@ -179,18 +257,18 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Tanggal Buka</label>
-                        <input type="date" name="periode_buka" required value="{{ date('Y-01-01') }}" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Buka</label>
+                        <input type="date" name="periode_buka" required value="{{ date('Y-m-d') }}" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Tanggal Tutup</label>
-                        <input type="date" name="periode_tutup" required value="{{ date('Y-08-30') }}" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Tutup</label>
+                        <input type="date" name="periode_tutup" required value="{{ date('Y-m-d', strtotime('+3 months')) }}" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
                     </div>
                 </div>
 
                 <div>
                     <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Deskripsi Jalur</label>
-                    <textarea name="deskripsi" rows="2" placeholder="Persyaratan singkat atau keterangan jalur..." class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"></textarea>
+                    <textarea name="deskripsi" rows="2" placeholder="Penjelasan kriteria penerimaan jalur ini..." class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl"></textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
@@ -252,6 +330,17 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Buka</label>
+                            <input type="date" name="periode_buka" x-model="selectedJalur.periode_buka" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Tutup</label>
+                            <input type="date" name="periode_tutup" x-model="selectedJalur.periode_tutup" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Deskripsi Jalur</label>
                         <textarea name="deskripsi" x-model="selectedJalur.deskripsi" rows="2" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl"></textarea>
@@ -283,7 +372,7 @@
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <h3 class="text-base font-bold text-rose-600">Konfirmasi Hapus Jalur</h3>
                 <button @click="deleteModalOpen = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 

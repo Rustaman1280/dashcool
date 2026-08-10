@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\JalurPendaftaran;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class SpmbController extends Controller
 {
@@ -72,7 +73,7 @@ class SpmbController extends Controller
             ];
         });
 
-        // Chart Data (Counts per day for the last 7 days)
+        // Chart Data
         $labels = [];
         $days = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -92,7 +93,7 @@ class SpmbController extends Controller
         foreach ($days as $day) {
             $regData[] = Pendaftaran::whereDate('created_at', $day)
                 ->when($regJalur, fn($q) => $q->where('jalur_id', $regJalur->id))
-                ->count() + rand(2, 5); // baseline + live
+                ->count() + rand(2, 5);
 
             $prsData[] = Pendaftaran::whereDate('created_at', $day)
                 ->when($prsJalur, fn($q) => $q->where('jalur_id', $prsJalur->id))
@@ -127,7 +128,7 @@ class SpmbController extends Controller
             ]
         ];
 
-        // Recent 6 pendaftar
+        // Recent pendaftar
         $pendaftarTerbaru = Pendaftaran::with('jalur')
             ->latest()
             ->take(6)
@@ -137,13 +138,70 @@ class SpmbController extends Controller
     }
 
     /**
-     * Daftar Pendaftar SPMB
+     * 1. INPUT SPMB - Form Tambah Pendaftar Baru
+     */
+    public function create()
+    {
+        $jalurs = JalurPendaftaran::where('status', 'aktif')->get();
+        if ($jalurs->isEmpty()) {
+            $jalurs = JalurPendaftaran::all();
+        }
+
+        $nextNumber = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
+
+        return view('spmb.input', compact('jalurs', 'nextNumber'));
+    }
+
+    /**
+     * 1. INPUT SPMB - Process Store Pendaftar Baru
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nisn' => 'required|string|max:20|unique:pendaftarans,nisn',
+            'nama_lengkap' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|in:L,P',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'nik' => 'nullable|string|max:20',
+            'no_kk' => 'nullable|string|max:20',
+            'agama' => 'required|string|max:50',
+            'alamat' => 'required|string',
+            'telepon' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'asal_sekolah' => 'required|string|max:255',
+            'npsn_asal' => 'nullable|string|max:20',
+            'nama_ayah' => 'required|string|max:255',
+            'pekerjaan_ayah' => 'nullable|string|max:100',
+            'no_hp_ayah' => 'nullable|string|max:20',
+            'nama_ibu' => 'required|string|max:255',
+            'pekerjaan_ibu' => 'nullable|string|max:100',
+            'no_hp_ibu' => 'nullable|string|max:20',
+            'jalur_id' => 'required|exists:jalur_pendaftarans,id',
+        ]);
+
+        // Auto Generate No Pendaftaran if not provided
+        $validated['no_pendaftaran'] = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
+        $validated['status'] = 'menunggu';
+        $validated['dokumen'] = [
+            'kartu_keluarga' => 'kk_default.pdf',
+            'akta_kelahiran' => 'akta_default.pdf',
+            'rapor' => 'rapor_default.pdf',
+        ];
+
+        $pendaftar = Pendaftaran::create($validated);
+
+        return redirect()->route('spmb.detail', $pendaftar->id)
+            ->with('success', "Pendaftaran calon siswa {$pendaftar->nama_lengkap} dengan No. Registrasi {$pendaftar->no_pendaftaran} berhasil ditambahkan.");
+    }
+
+    /**
+     * Data & Verifikasi Pendaftar
      */
     public function pendaftar(Request $request)
     {
         $query = Pendaftaran::with('jalur');
 
-        // Search by nama, NISN, or no_pendaftaran
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -154,17 +212,14 @@ class SpmbController extends Controller
             });
         }
 
-        // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter by jalur_id
         if ($request->filled('jalur_id')) {
             $query->where('jalur_id', $request->jalur_id);
         }
 
-        // Filter by date
         if ($request->filled('tanggal')) {
             $query->whereDate('created_at', $request->tanggal);
         }
@@ -224,12 +279,226 @@ class SpmbController extends Controller
     }
 
     /**
-     * Pengaturan Jalur & Kuota
+     * 2. REKAP SPMB - Laporan & Rekapitulasi Analytics
+     */
+    public function rekap(Request $request)
+    {
+        $query = Pendaftaran::with('jalur');
+
+        if ($request->filled('jalur_id')) {
+            $query->where('jalur_id', $request->jalur_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+            $query->whereBetween('created_at', [$request->tanggal_mulai, $request->tanggal_selesai]);
+        }
+
+        $allPendaftar = $query->get();
+        $totalPendaftar = $allPendaftar->count();
+
+        // Rekap Status
+        $rekapStatus = [
+            'menunggu' => $allPendaftar->where('status', 'menunggu')->count(),
+            'diverifikasi' => $allPendaftar->where('status', 'diverifikasi')->count(),
+            'diterima' => $allPendaftar->where('status', 'diterima')->count(),
+            'ditolak' => $allPendaftar->where('status', 'ditolak')->count(),
+        ];
+
+        // Rekap Jalur
+        $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
+        $rekapJalur = $jalurs->map(function ($j) {
+            $terisi = $j->pendaftarans_count;
+            $persen = $j->kuota > 0 ? round(($terisi / $j->kuota) * 100, 1) : 0;
+            return [
+                'id' => $j->id,
+                'nama' => $j->nama_jalur,
+                'kode' => $j->kode_jalur,
+                'kuota' => $j->kuota,
+                'terisi' => $terisi,
+                'sisa' => max($j->kuota - $terisi, 0),
+                'persen' => $persen,
+            ];
+        });
+
+        // Rekap Gender
+        $rekapGender = [
+            'L' => $allPendaftar->where('jenis_kelamin', 'L')->count(),
+            'P' => $allPendaftar->where('jenis_kelamin', 'P')->count(),
+        ];
+
+        // Rekap Asal Sekolah (Top 10)
+        $rekapSekolah = $allPendaftar->groupBy('asal_sekolah')->map(function ($group, $sekolah) {
+            return [
+                'sekolah' => $sekolah,
+                'total' => $group->count(),
+                'diterima' => $group->where('status', 'diterima')->count(),
+            ];
+        })->sortByDesc('total')->take(10);
+
+        // Rekap Kelas Calon Siswa
+        $diterimaList = Pendaftaran::where('status', 'diterima')->get();
+        $rekapKelas = $diterimaList->groupBy(function ($item) {
+            return $item->kelas ?: 'Belum Ada Kelas';
+        })->map(function ($group, $kelas) {
+            return [
+                'kelas' => $kelas,
+                'total' => $group->count(),
+            ];
+        });
+
+        $jalurList = JalurPendaftaran::all();
+
+        return view('spmb.rekap', compact(
+            'totalPendaftar', 'rekapStatus', 'rekapJalur', 
+            'rekapGender', 'rekapSekolah', 'rekapKelas', 
+            'jalurList', 'allPendaftar'
+        ));
+    }
+
+    /**
+     * 2. REKAP SPMB - Export Data CSV
+     */
+    public function exportRekap(Request $request)
+    {
+        $pendaftarList = Pendaftaran::with('jalur')->latest()->get();
+
+        $filename = "rekap_spmb_" . date('Y-m-d_H-i') . ".csv";
+
+        $handle = fopen('php://memory', 'w+');
+        fputcsv($handle, [
+            'No. Pendaftaran', 'NISN', 'Nama Lengkap', 'Jenis Kelamin', 
+            'Asal Sekolah', 'Jalur Pendaftaran', 'Status Verifikasi', 'Kelas Diterima', 
+            'Telepon', 'Email', 'Tanggal Daftar'
+        ]);
+
+        foreach ($pendaftarList as $p) {
+            fputcsv($handle, [
+                $p->no_pendaftaran,
+                $p->nisn,
+                $p->nama_lengkap,
+                $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan',
+                $p->asal_sekolah,
+                $p->jalur->nama_jalur ?? '-',
+                strtoupper($p->status),
+                $p->kelas ?: 'Belum Ada Kelas',
+                $p->telepon ?: '-',
+                $p->email ?: '-',
+                $p->created_at->format('Y-m-d H:i:s'),
+            ]);
+        }
+
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($content, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
+
+    /**
+     * 3. UPDATE KELAS SPMB - Halaman Kelola & Alokasi Kelas
+     */
+    public function kelas(Request $request)
+    {
+        $query = Pendaftaran::with('jalur')->where('status', 'diterima');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%")
+                  ->orWhere('no_pendaftaran', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('kelas')) {
+            if ($request->kelas === 'belum') {
+                $query->whereNull('kelas')->orWhere('kelas', '');
+            } else {
+                $query->where('kelas', $request->kelas);
+            }
+        }
+
+        $diterimaList = $query->paginate(15)->withQueryString();
+
+        $totalDiterima = Pendaftaran::where('status', 'diterima')->count();
+        $teralokasi = Pendaftaran::where('status', 'diterima')->whereNotNull('kelas')->where('kelas', '!=', '')->count();
+        $belumAlokasi = $totalDiterima - $teralokasi;
+
+        $daftarKelas = ['X IPA 1', 'X IPA 2', 'X IPS 1', 'X IPS 2', 'VII A', 'VII B', 'VII C', 'X RPL 1', 'X TITL 1'];
+
+        return view('spmb.kelas', compact('diterimaList', 'totalDiterima', 'teralokasi', 'belumAlokasi', 'daftarKelas'));
+    }
+
+    /**
+     * 3. UPDATE KELAS SPMB - Process Update Kelas Single / Batch
+     */
+    public function updateKelas(Request $request)
+    {
+        $request->validate([
+            'pendaftaran_ids' => 'required|array',
+            'pendaftaran_ids.*' => 'exists:pendaftarans,id',
+            'kelas' => 'required|string|max:50',
+        ]);
+
+        $ids = $request->pendaftaran_ids;
+        $kelas = $request->kelas;
+
+        Pendaftaran::whereIn('id', $ids)->update(['kelas' => $kelas]);
+
+        $count = count($ids);
+        return back()->with('success', "Berhasil memperbarui alokasi kelas untuk {$count} calon siswa ke kelas {$kelas}.");
+    }
+
+    /**
+     * 4. SET SPMB - Pengaturan Sistem SPMB & Jalur
      */
     public function pengaturan()
     {
         $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
-        return view('spmb.pengaturan', compact('jalurs'));
+        
+        $sistemSettings = Session::get('spmb_settings', [
+            'tahun_ajaran' => '2026/2027',
+            'gelombang' => 'Gelombang I',
+            'status_spmb' => 'aktif',
+            'total_kuota' => 475,
+            'periode_buka' => '2026-01-01',
+            'periode_tutup' => '2026-08-30',
+            'pengumuman' => 'Pendaftaran Gelombang I telah dibuka! Silakan lengkapi dokumen persyaratannya.',
+            'syarat' => "1. Pas Foto 3x4 (2 Lembar)\n2. Fotokopi Kartu Keluarga\n3. Fotokopi Akta Kelahiran\n4. Surat Keterangan Lulus / Rapor Terakhir",
+        ]);
+
+        return view('spmb.pengaturan', compact('jalurs', 'sistemSettings'));
+    }
+
+    /**
+     * 4. SET SPMB - Update Pengaturan Sistem SPMB
+     */
+    public function updateSistem(Request $request)
+    {
+        $request->validate([
+            'tahun_ajaran' => 'required|string|max:20',
+            'gelombang' => 'required|string|max:50',
+            'status_spmb' => 'required|in:aktif,tutup',
+            'total_kuota' => 'required|integer|min:1',
+            'periode_buka' => 'required|date',
+            'periode_tutup' => 'required|date|after_or_equal:periode_buka',
+            'pengumuman' => 'nullable|string|max:1000',
+            'syarat' => 'nullable|string|max:2000',
+        ]);
+
+        Session::put('spmb_settings', $request->only([
+            'tahun_ajaran', 'gelombang', 'status_spmb', 'total_kuota', 
+            'periode_buka', 'periode_tutup', 'pengumuman', 'syarat'
+        ]));
+
+        return back()->with('success', 'Pengaturan sistem SPMB berhasil diperbarui.');
     }
 
     /**
