@@ -5,7 +5,7 @@
 @endphp
 
 @section('content')
-<div class="space-y-6 max-w-5xl mx-auto">
+<div class="space-y-6 w-full">
     
     <!-- SUB NAVIGATION BAR -->
     @include('spmb.partials.nav')

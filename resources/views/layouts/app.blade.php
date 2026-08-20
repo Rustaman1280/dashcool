@@ -288,7 +288,7 @@
             </header>
 
             <!-- MAIN BODY CONTENT -->
-            <main class="flex-1 py-6 px-4 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto">
+            <main class="flex-1 py-6 px-4 sm:px-6 lg:px-8 w-full">
                 @if (session('success'))
                     <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
                         <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -303,7 +303,7 @@
 
             <!-- FOOTER -->
             <footer class="mt-auto border-t border-gray-200/60 bg-white py-4 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
+                <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
                     <p>&copy; {{ date('Y') }} Dashcool - Sistem Informasi Penerimaan Murid Baru Online</p>
                     <p class="text-gray-400">Versi 2.4.0 &bull; Modul SPMB v1.0</p>
                 </div>
