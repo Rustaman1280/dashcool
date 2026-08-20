@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pendaftaran extends Model
+class Spmb extends Model
 {
     use HasFactory;
 
@@ -46,6 +46,11 @@ class Pendaftaran extends Model
 
     public function jalur()
     {
-        return $this->belongsTo(JalurPendaftaran::class, 'jalur_id');
+        return $this->belongsTo(SpmbSet::class, 'jalur_id');
+    }
+
+    public function spmbSet()
+    {
+        return $this->belongsTo(SpmbSet::class, 'jalur_id');
     }
 }

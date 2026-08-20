@@ -158,7 +158,7 @@ class SpmbController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nisn' => 'required|string|max:20|unique:pendaftarans,nisn',
+            'nisn' => 'required|string|max:20|unique:spmb,nisn',
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
             'tempat_lahir' => 'required|string|max:100',
@@ -177,7 +177,7 @@ class SpmbController extends Controller
             'nama_ibu' => 'required|string|max:255',
             'pekerjaan_ibu' => 'nullable|string|max:100',
             'no_hp_ibu' => 'nullable|string|max:20',
-            'jalur_id' => 'required|exists:jalur_pendaftarans,id',
+            'jalur_id' => 'required|exists:spmb_set,id',
         ]);
 
         // Auto Generate No Pendaftaran if not provided
@@ -446,7 +446,7 @@ class SpmbController extends Controller
     {
         $request->validate([
             'pendaftaran_ids' => 'required|array',
-            'pendaftaran_ids.*' => 'exists:pendaftarans,id',
+            'pendaftaran_ids.*' => 'exists:spmb,id',
             'kelas' => 'required|string|max:50',
         ]);
 
@@ -511,7 +511,7 @@ class SpmbController extends Controller
     {
         $request->validate([
             'nama_jalur' => 'required|string|max:255',
-            'kode_jalur' => 'required|string|max:10|unique:jalur_pendaftarans,kode_jalur',
+            'kode_jalur' => 'required|string|max:10|unique:spmb_set,kode_jalur',
             'kuota' => 'required|integer|min:1',
             'periode_buka' => 'required|date',
             'periode_tutup' => 'required|date|after_or_equal:periode_buka',
@@ -533,7 +533,7 @@ class SpmbController extends Controller
 
         $request->validate([
             'nama_jalur' => 'required|string|max:255',
-            'kode_jalur' => 'required|string|max:10|unique:jalur_pendaftarans,kode_jalur,' . $id,
+            'kode_jalur' => 'required|string|max:10|unique:spmb_set,kode_jalur,' . $id,
             'kuota' => 'required|integer|min:1',
             'periode_buka' => 'required|date',
             'periode_tutup' => 'required|date|after_or_equal:periode_buka',

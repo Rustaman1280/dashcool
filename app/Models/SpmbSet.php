@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class JalurPendaftaran extends Model
+class SpmbSet extends Model
 {
     use HasFactory;
 
@@ -27,19 +27,19 @@ class JalurPendaftaran extends Model
         'kuota' => 'integer',
     ];
 
-    public function pendaftarans()
-    {
-        return $this->hasMany(Pendaftaran::class, 'jalur_id');
-    }
-
     public function spmbs()
     {
-        return $this->hasMany(Pendaftaran::class, 'jalur_id');
+        return $this->hasMany(Spmb::class, 'jalur_id');
+    }
+
+    public function pendaftarans()
+    {
+        return $this->hasMany(Spmb::class, 'jalur_id');
     }
 
     public function getTerisiAttribute(): int
     {
-        return $this->pendaftarans()->count();
+        return $this->spmbs()->count();
     }
 
     public function getPersenTerisiAttribute(): float

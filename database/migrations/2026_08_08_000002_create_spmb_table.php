@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pendaftarans', function (Blueprint $table) {
+        Schema::create('spmb', function (Blueprint $table) {
             $table->id();
             $table->string('no_pendaftaran')->unique();
             $table->string('nisn')->unique();
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('no_hp_ibu')->nullable();
 
             // Relasi & Status SPMB
-            $table->foreignId('jalur_id')->constrained('jalur_pendaftarans')->onDelete('cascade');
+            $table->foreignId('jalur_id')->constrained('spmb_set')->onDelete('cascade');
             $table->enum('status', ['menunggu', 'diverifikasi', 'diterima', 'ditolak'])->default('menunggu');
             $table->text('catatan_verifikasi')->nullable();
             $table->json('dokumen')->nullable();
@@ -51,6 +51,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pendaftarans');
+        Schema::dropIfExists('spmb');
     }
 };
