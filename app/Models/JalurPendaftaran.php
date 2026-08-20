@@ -12,6 +12,7 @@ class JalurPendaftaran extends Model
     protected $table = 'spmb_set';
 
     protected $fillable = [
+        'tahun_ajaran_id',
         'nama_jalur',
         'kode_jalur',
         'kuota',
@@ -25,7 +26,13 @@ class JalurPendaftaran extends Model
         'periode_buka' => 'date',
         'periode_tutup' => 'date',
         'kuota' => 'integer',
+        'tahun_ajaran_id' => 'integer',
     ];
+
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
+    }
 
     public function pendaftarans()
     {

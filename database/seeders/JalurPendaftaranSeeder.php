@@ -48,7 +48,12 @@ class JalurPendaftaranSeeder extends Seeder
             ],
         ];
 
+        $activeTa = \App\Models\TahunAjaran::where('is_active', true)->first();
+
         foreach ($jalurs as $j) {
+            if ($activeTa) {
+                $j['tahun_ajaran_id'] = $activeTa->id;
+            }
             JalurPendaftaran::updateOrCreate(['kode_jalur' => $j['kode_jalur']], $j);
         }
     }

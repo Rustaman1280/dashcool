@@ -52,6 +52,12 @@ Route::middleware(['auth.custom'])->group(function () {
         Route::put('/pengaturan/{id}', [SpmbController::class, 'updateJalur'])->name('pengaturan.update');
         Route::delete('/pengaturan/{id}', [SpmbController::class, 'destroyJalur'])->name('pengaturan.destroy');
         Route::post('/pengaturan/sistem', [SpmbController::class, 'updateSistem'])->name('pengaturan.sistem');
+
+        // Tahun Ajaran Routes
+        Route::post('/pengaturan/tahun-ajaran', [SpmbController::class, 'storeTahunAjaran'])->name('pengaturan.tahun-ajaran.store');
+        Route::put('/pengaturan/tahun-ajaran/{id}', [SpmbController::class, 'updateTahunAjaran'])->name('pengaturan.tahun-ajaran.update');
+        Route::delete('/pengaturan/tahun-ajaran/{id}', [SpmbController::class, 'destroyTahunAjaran'])->name('pengaturan.tahun-ajaran.destroy');
+        Route::post('/pengaturan/tahun-ajaran/{id}/toggle-active', [SpmbController::class, 'toggleActiveTahunAjaran'])->name('pengaturan.tahun-ajaran.toggle-active');
     });
 
 });

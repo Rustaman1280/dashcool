@@ -65,7 +65,12 @@
                         <input type="radio" name="jalur_id" value="{{ $j->id }}" class="sr-only" {{ old('jalur_id', $loop->first ? $j->id : '') == $j->id ? 'checked' : '' }}>
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">{{ $j->kode_jalur }}</span>
-                            <span class="text-[11px] font-semibold text-gray-500">Kuota: {{ $j->kuota }}</span>
+                            <div class="text-right">
+                                @if($j->tahunAjaran)
+                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded mr-1">T.A {{ $j->tahunAjaran->nama }}</span>
+                                @endif
+                                <span class="text-[11px] font-semibold text-gray-500">Kuota: {{ $j->kuota }}</span>
+                            </div>
                         </div>
                         <span class="font-bold text-sm text-gray-900 mt-2">{{ $j->nama_jalur }}</span>
                         <span class="text-[11px] text-gray-500 mt-1 truncate">{{ $j->deskripsi ?: 'Jalur seleksi penerimaan reguler' }}</span>
