@@ -19,29 +19,33 @@
     <!-- SUB NAVIGATION BAR -->
     @include('spmb.partials.nav')
 
-    <!-- HEADER BANNER -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10">
-        <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                Modul Konfigurasi Central SPMB
+    <!-- PAGE TITLE & QUICK ACTIONS (MATCHING SPMB DASHBOARD) -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="space-y-1.5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Modul Konfigurasi Central SPMB</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Set SPMB & Pengaturan Jalur</h1>
-            <p class="mt-1 text-xs sm:text-sm text-indigo-200">Konfigurasi relasi tahun ajaran, gelombang pendaftaran, syarat, pengumuman, dan kuota tiap jalur.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Set SPMB & Pengaturan Jalur
+            </h1>
+            <p class="text-sm text-slate-500 max-w-2xl leading-relaxed">
+                Konfigurasi relasi tahun ajaran, gelombang pendaftaran, syarat, pengumuman, dan kuota tiap jalur.
+            </p>
         </div>
 
-        <div class="flex items-center gap-2">
-            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/15 text-white hover:bg-white/25 border border-white/20 font-bold text-xs sm:text-sm transition-all">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <div class="flex items-center gap-3 flex-wrap flex-shrink-0">
+            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-800 text-xs sm:text-sm font-semibold transition-colors">
+                <svg class="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                + Tahun Ajaran
+                <span>+ Tahun Ajaran</span>
             </button>
-            <button @click="createModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-indigo-900 hover:bg-indigo-50 font-bold text-xs sm:text-sm shadow-md transition-all">
-                <svg class="w-4 h-4 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <button @click="createModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                Tambah Jalur Baru
+                <span>Tambah Jalur Baru</span>
             </button>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-[#FAF9F6]">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,11 +11,11 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
-    <!-- Google Fonts (Instrument Sans / Inter) -->
+    <!-- Google Fonts (Plus Jakarta Sans & Instrument Sans) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|instrument-sans:400,500,600,700" rel="stylesheet" />
 
-    <!-- Alpine.js & Chart.js CDN for immediate interactivity -->
+    <!-- Alpine.js & Chart.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -23,24 +23,24 @@
 
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Instrument Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', 'Instrument Sans', sans-serif; }
     </style>
 </head>
-<body class="h-full antialiased text-gray-800 bg-slate-50"
+<body class="h-full antialiased text-slate-800 bg-[#FAF9F6]"
       x-data="{ isCollapsed: false, mobileOpen: false, profileDropdown: false, notificationsOpen: false }">
 
     <div class="min-h-screen flex flex-col">
         <!-- OFF-CANVAS MOBILE SIDEBAR BACKDROP -->
         <div x-show="mobileOpen"
              x-cloak
-             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter="transition-opacity ease-linear duration-200"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave="transition-opacity ease-linear duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              @click="mobileOpen = false"
-             class="fixed inset-0 z-40 bg-gray-900/60 backdrop-blur-sm lg:hidden"></div>
+             class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"></div>
 
         <!-- MOBILE OFF-CANVAS DRAWER -->
         <div x-show="mobileOpen"

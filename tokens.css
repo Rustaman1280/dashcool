@@ -1,0 +1,38 @@
+/* Hallmark · tokens.css · genre: modern-minimal · tone: soft · designed-as-app */
+:root {
+    /* Soft Humanist OKLCH Palette */
+    --color-paper: oklch(98.5% 0.006 80);
+    --color-paper-card: oklch(100% 0 0);
+    --color-paper-subtle: oklch(96.5% 0.008 80);
+    --color-ink: oklch(22% 0.02 60);
+    --color-ink-muted: oklch(48% 0.02 60);
+    --color-rule: oklch(91% 0.01 75);
+    --color-rule-focus: oklch(75% 0.04 245);
+    
+    /* Semantic Brand Accents */
+    --color-accent: oklch(52% 0.13 245);
+    --color-accent-hover: oklch(46% 0.14 245);
+    --color-accent-soft: oklch(95% 0.03 245);
+    --color-accent-ink: oklch(99% 0.005 245);
+
+    --color-success: oklch(56% 0.12 155);
+    --color-success-soft: oklch(95% 0.03 155);
+    --color-warning: oklch(68% 0.13 75);
+    --color-warning-soft: oklch(95% 0.04 75);
+    --color-danger: oklch(55% 0.15 25);
+    --color-danger-soft: oklch(95% 0.04 25);
+
+    /* Typography */
+    --font-display: 'Plus Jakarta Sans', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Instrument Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* Radius & Spacing */
+    --radius-card: 1rem;
+    --radius-button: 0.75rem;
+    --radius-input: 0.75rem;
+    --radius-badge: 9999px;
+
+    /* Motion */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-short: 180ms;
+}

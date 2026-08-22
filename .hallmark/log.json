@@ -1,0 +1,39 @@
+[
+  {
+    "id": "dashcool-redesign-2026",
+    "timestamp": "2026-08-22T07:48:00Z",
+    "scope": "app",
+    "genre": "modern-minimal",
+    "tone": "soft",
+    "macrostructure": "workbench-and-focus-flow",
+    "rationale": "Redesigned Dashcool into an approachable, accessible, warm academic information system for dual audience (school administrators/teachers and parents/students) eliminating AI-slop anti-patterns (floating glow orbs, dark purple gradients, fake server latency gauges, low-contrast text, small touch targets).",
+    "tokens_defined": [
+      "--color-paper",
+      "--color-paper-card",
+      "--color-ink",
+      "--color-ink-muted",
+      "--color-line",
+      "--color-accent",
+      "--color-success",
+      "--font-display",
+      "--font-body",
+      "--font-mono"
+    ],
+    "components_touched": [
+      "resources/views/layouts/app.blade.php",
+      "resources/views/layouts/mobile-spmb.blade.php",
+      "resources/views/dashboard.blade.php",
+      "resources/views/components/stat-card.blade.php",
+      "resources/views/components/sidebar-item.blade.php",
+      "resources/views/components/data-table.blade.php",
+      "resources/views/spmb/index.blade.php",
+      "resources/views/spmb/partials/nav.blade.php",
+      "resources/views/spmb/public/register.blade.php",
+      "resources/views/spmb/public/status.blade.php",
+      "tailwind.config.js",
+      "resources/css/app.css",
+      "tokens.css",
+      "design.md"
+    ]
+  }
+]

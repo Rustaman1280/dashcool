@@ -7,15 +7,15 @@
 ])
 
 @php
-    $baseClasses = 'group flex items-center gap-x-3 px-3.5 py-3 text-sm font-medium rounded-r-xl transition-all duration-150 border-l-4';
+    $baseClasses = 'group flex items-center gap-x-3 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors duration-150';
     
     $activeClasses = $active 
-        ? 'bg-indigo-50/90 text-indigo-700 font-semibold border-indigo-600 shadow-sm' 
-        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70 border-transparent';
+        ? 'bg-slate-900 text-white font-semibold shadow-sm' 
+        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80';
         
     $iconClasses = $active
-        ? 'text-indigo-600'
-        : 'text-gray-400 group-hover:text-gray-600';
+        ? 'text-white'
+        : 'text-slate-400 group-hover:text-slate-700';
 @endphp
 
 <a href="{{ $href }}" 

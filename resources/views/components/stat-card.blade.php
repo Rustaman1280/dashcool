@@ -40,18 +40,18 @@
     $currentColor = $colorClasses[$color] ?? $colorClasses['indigo'];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5']) }}>
-    <div class="flex items-center justify-between">
+<div {{ $attributes->merge(['class' => 'group relative bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 transition-colors duration-150 hover:border-slate-300']) }}>
+    <div class="flex items-start justify-between gap-4">
         <div>
-            <p class="text-sm font-medium text-gray-500 tracking-wide">{{ $title }}</p>
-            <h3 class="mt-2 text-3xl font-bold text-gray-900 tracking-tight">{{ $value }}</h3>
+            <p class="text-xs font-semibold text-slate-500 tracking-wide uppercase">{{ $title }}</p>
+            <h3 class="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">{{ $value }}</h3>
         </div>
         
-        <div class="flex items-center justify-center w-12 h-12 rounded-xl border {{ $currentColor['bg'] }} transition-transform duration-200 group-hover:scale-110">
+        <div class="flex items-center justify-center w-11 h-11 rounded-xl border {{ $currentColor['bg'] }} flex-shrink-0">
             @if ($icon)
                 {!! $icon !!}
             @else
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                 </svg>
             @endif

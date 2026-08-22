@@ -5,35 +5,40 @@
 @endphp
 
 @section('content')
+{{-- Hallmark · macrostructure: Workbench · genre: modern-minimal · tone: soft · designed-as-app --}}
 <div class="space-y-6">
     
     <!-- SUB NAVIGATION BAR -->
     @include('spmb.partials.nav')
 
     <!-- PAGE TITLE & QUICK ACTIONS BANNER -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10">
-        <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Pendaftaran Gelombang I Aktif (1 Jan - 30 Aug 2026)
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="space-y-1.5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Pendaftaran Gelombang I Aktif &bull; 1 Jan — 30 Agu 2026</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Sistem Penerimaan Murid Baru</h1>
-            <p class="mt-1 text-sm text-indigo-200">Kelola data calon siswa, verifikasi berkas, dan kuota pendaftaran sekolah.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Pusat Kendali SPMB Online
+            </h1>
+            <p class="text-sm text-slate-500 max-w-2xl leading-relaxed">
+                Kelola data calon siswa baru, verifikasi keabsahan berkas, pemetaan kuota jalur, dan penerbitan bukti pendaftaran.
+            </p>
         </div>
 
-        <div class="flex items-center gap-3 flex-wrap">
-            <a href="{{ route('spmb.pendaftar') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-indigo-900 text-xs sm:text-sm font-semibold shadow-sm hover:bg-indigo-50 transition-all">
-                <svg class="w-4 h-4 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <div class="flex items-center gap-3 flex-wrap flex-shrink-0">
+            <a href="{{ route('spmb.pendaftar') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Lihat Semua Pendaftar ({{ $totalCount }})
+                <span>Semua Pendaftar ({{ $totalCount }})</span>
             </a>
-            <a href="{{ route('spmb.pengaturan') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 border border-indigo-400/30 text-white text-xs sm:text-sm font-semibold backdrop-blur-sm transition-all">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <a href="{{ route('spmb.pengaturan') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-800 text-xs sm:text-sm font-semibold transition-colors">
+                <svg class="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 18H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 12h11.25" />
                 </svg>
-                Atur Kuota
+                <span>Atur Kuota Jalur</span>
             </a>
         </div>
     </div>
@@ -229,10 +234,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('spmbChart').getContext('2d');
         
-        const gradientIndigo = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientIndigo.addColorStop(0, 'rgba(79, 70, 229, 0.25)');
-        gradientIndigo.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
-
         const chartData = @json($chartData);
 
         new Chart(ctx, {
@@ -244,10 +245,10 @@
                         label: ds.label,
                         data: ds.data,
                         borderColor: ds.borderColor,
-                        backgroundColor: index === 0 ? gradientIndigo : ds.backgroundColor,
-                        borderWidth: 2.5,
+                        backgroundColor: index === 0 ? 'rgba(15, 23, 42, 0.04)' : ds.backgroundColor,
+                        borderWidth: 2,
                         fill: index === 0,
-                        tension: 0.35,
+                        tension: 0.3,
                         pointRadius: 4,
                         pointHoverRadius: 6,
                         pointBackgroundColor: ds.borderColor,
