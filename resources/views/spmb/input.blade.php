@@ -12,7 +12,7 @@
 
     <!-- HEADER BANNER -->
     <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
             <div>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold backdrop-blur-sm mb-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -21,9 +21,18 @@
                 <h1 class="text-2xl font-bold tracking-tight">Input Pendaftaran Siswa Baru</h1>
                 <p class="mt-1 text-xs sm:text-sm text-indigo-200">Isi formulir berikut untuk mendaftarkan calon peserta didik baru ke dalam sistem SPMB.</p>
             </div>
-            <div class="hidden sm:block text-right bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10">
-                <span class="text-[11px] text-indigo-200 uppercase tracking-wider block font-semibold">No. Pendaftaran Sistem</span>
-                <span class="text-lg font-mono font-bold text-white">{{ $nextNumber }}</span>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('spmb.public.register') }}" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-xs font-bold shadow-md shadow-emerald-950/20 transition-all inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                    </svg>
+                    <span>Form Siswa (Mobile)</span>
+                    <svg class="w-3 h-3 text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+                <div class="hidden sm:block text-right bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-white/10">
+                    <span class="text-[11px] text-indigo-200 uppercase tracking-wider block font-semibold">No. Pendaftaran Sistem</span>
+                    <span class="text-lg font-mono font-bold text-white">{{ $nextNumber }}</span>
+                </div>
             </div>
         </div>
     </div>

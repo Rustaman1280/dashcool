@@ -30,13 +30,49 @@
         
         <!-- HEADER / BRANDING -->
         <div class="text-center">
-            <img src="{{ asset('logo.webp') }}" class="w-24 h-24 sm:w-28 sm:h-28 object-contain mx-auto mb-3 drop-shadow-sm" alt="Dashcool Logo">
+            <img src="{{ asset('logo.webp') }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain mx-auto mb-3 drop-shadow-sm" alt="Dashcool Logo">
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:text-3xl">Dashcool</h1>
-            <p class="mt-2 text-sm text-gray-500">Sistem Informasi Manajemen Sekolah Terpadu</p>
+            <p class="mt-1 text-sm text-gray-500">Sistem Informasi Manajemen Sekolah Terpadu</p>
         </div>
 
-        <!-- LOGIN CARD -->
+        <!-- PUBLIC SPMB REGISTRATION BANNER FOR STUDENTS & PARENTS -->
+        <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-indigo-950/20 border border-indigo-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-indigo-100 text-[11px] font-bold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    SPMB Online Dibuka
+                </span>
+                <span class="text-[11px] font-semibold text-indigo-200">T.A 2026/2027</span>
+            </div>
+
+            <div>
+                <h2 class="text-base font-bold text-white leading-snug">Pendaftaran Siswa Baru</h2>
+                <p class="text-xs text-indigo-200 mt-0.5 leading-relaxed">Calon peserta didik dan orang tua dapat langsung mendaftar secara online melalui ponsel.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <a href="{{ route('spmb.public.register') }}" class="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-xs font-bold text-center shadow-md shadow-emerald-950/20 transition-all flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    <span>Daftar SPMB</span>
+                </a>
+
+                <a href="{{ route('spmb.public.status') }}" class="py-2.5 px-3 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs font-bold text-center backdrop-blur-sm border border-white/20 transition-all flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                    <span>Cek Status</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- LOGIN CARD (ADMIN / GURU / PANITIA) -->
         <div class="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
+            <div class="mb-5 pb-3 border-b border-gray-100">
+                <h3 class="text-sm font-bold text-gray-900">Login Panitia & Pengguna Internal</h3>
+                <p class="text-xs text-gray-500">Khusus administrator dan panitia sekolah</p>
+            </div>
             
             @if (session('success'))
                 <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-2.5">

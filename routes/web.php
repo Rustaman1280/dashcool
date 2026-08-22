@@ -11,6 +11,25 @@ Route::middleware(['guest.custom'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 });
 
+// Public SPMB Portal Routes (For Students & Parents - Mobile Optimized)
+Route::prefix('spmb')->name('spmb.public.')->group(function () {
+    Route::get('/daftar', [SpmbController::class, 'publicRegister'])->name('register');
+    Route::post('/daftar', [SpmbController::class, 'publicStore'])->name('store');
+    Route::get('/berhasil/{id}', [SpmbController::class, 'publicSuccess'])->name('success');
+    Route::get('/cek-status', [SpmbController::class, 'publicStatus'])->name('status');
+    Route::post('/cek-status', [SpmbController::class, 'publicCheckStatus'])->name('check');
+    Route::get('/bukti/{id}', [SpmbController::class, 'publicProof'])->name('proof');
+});
+
+// Shortcuts for easy access
+Route::get('/daftar', function () {
+    return redirect()->route('spmb.public.register');
+})->name('daftar');
+
+Route::get('/status', function () {
+    return redirect()->route('spmb.public.status');
+})->name('status');
+
 // Logout Route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

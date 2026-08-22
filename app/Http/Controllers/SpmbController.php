@@ -676,4 +676,182 @@ class SpmbController extends Controller
 
         return back()->with('success', "Tahun Ajaran {$ta->nama} berhasil dihapus.");
     }
+
+    /**
+     * =========================================================================
+     * PUBLIC SPMB PORTAL (KHUSUS SISWA & ORANG TUA - MOBILE FIRST)
+     * =========================================================================
+     */
+
+    /**
+     * 1. Public Register Form (Mobile-First)
+     */
+    public function publicRegister()
+    {
+        $activeTa = TahunAjaran::where('is_active', true)->first();
+        
+        $jalursQuery = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif');
+        if ($activeTa) {
+            $jalurs = $jalursQuery->where('tahun_ajaran_id', $activeTa->id)->get();
+            if ($jalurs->isEmpty()) {
+                $jalurs = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif')->get();
+            }
+        } else {
+            $jalurs = $jalursQuery->get();
+        }
+
+        if ($jalurs->isEmpty()) {
+            $jalurs = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->get();
+        }
+
+        $sistemSettings = Session::get('spmb_settings', [
+            'tahun_ajaran_id' => $activeTa?->id,
+            'tahun_ajaran' => $activeTa?->nama ?? '2026/2027',
+            'gelombang' => 'Gelombang I',
+            'status_spmb' => 'aktif',
+            'total_kuota' => 475,
+            'periode_buka' => '2026-01-01',
+            'periode_tutup' => '2026-08-30',
+            'pengumuman' => 'Pendaftaran Peserta Didik Baru telah dibuka! Silakan lengkapi formulir pendaftaran online dengan data yang benar.',
+            'syarat' => "1. Pas Foto Calon Siswa\n2. Kartu Keluarga (KK)\n3. Akta Kelahiran\n4. Surat Keterangan Lulus / Rapor Terakhir",
+        ]);
+
+        $nextNumber = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
+
+        return view('spmb.public.register', compact('jalurs', 'activeTa', 'sistemSettings', 'nextNumber'));
+    }
+
+    /**
+     * 2. Public Store Pendaftar
+     */
+    public function publicStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'nisn' => 'required|string|max:20|unique:spmb,nisn',
+            'nik' => 'nullable|string|max:16',
+            'no_kk' => 'nullable|string|max:16',
+            'jenis_kelamin' => 'required|in:L,P',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'agama' => 'required|string|max:50',
+            'alamat' => 'required|string',
+            'telepon' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'asal_sekolah' => 'required|string|max:255',
+            'npsn_asal' => 'nullable|string|max:20',
+            'nama_ayah' => 'required|string|max:255',
+            'pekerjaan_ayah' => 'nullable|string|max:100',
+            'no_hp_ayah' => 'nullable|string|max:20',
+            'nama_ibu' => 'required|string|max:255',
+            'pekerjaan_ibu' => 'nullable|string|max:100',
+            'no_hp_ibu' => 'nullable|string|max:20',
+            'jalur_id' => 'required|exists:spmb_set,id',
+        ], [
+            'nama_lengkap.required' => 'Nama lengkap calon siswa wajib diisi.',
+            'nisn.required' => 'Nomor Induk Siswa Nasional (NISN) wajib diisi.',
+            'nisn.unique' => 'NISN ini sudah terdaftar di dalam sistem SPMB.',
+            'jenis_kelamin.required' => 'Pilih jenis kelamin calon siswa.',
+            'tempat_lahir.required' => 'Tempat lahir wajib diisi.',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'agama.required' => 'Pilihan agama wajib diisi.',
+            'alamat.required' => 'Alamat domisili tempat tinggal wajib diisi.',
+            'asal_sekolah.required' => 'Nama sekolah asal (SMP/MTs) wajib diisi.',
+            'nama_ayah.required' => 'Nama ayah kandung wajib diisi.',
+            'nama_ibu.required' => 'Nama ibu kandung wajib diisi.',
+            'jalur_id.required' => 'Silakan pilih salah satu jalur pendaftaran yang tersedia.',
+        ]);
+
+        $validated['no_pendaftaran'] = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
+        $validated['status'] = 'menunggu';
+
+        $pendaftar = Pendaftaran::create($validated);
+
+        return redirect()->route('spmb.public.success', $pendaftar->id)
+            ->with('success', "Selamat! Formulir pendaftaran berhasil dikirim dengan Nomor: {$pendaftar->no_pendaftaran}");
+    }
+
+    /**
+     * 3. Public Success Registration Screen & Digital Card
+     */
+    public function publicSuccess($id)
+    {
+        $pendaftar = Pendaftaran::with('jalur.tahunAjaran')->findOrFail($id);
+
+        $sistemSettings = Session::get('spmb_settings', [
+            'tahun_ajaran' => '2026/2027',
+            'gelombang' => 'Gelombang I',
+        ]);
+
+        return view('spmb.public.success', compact('pendaftar', 'sistemSettings'));
+    }
+
+    /**
+     * 4. Public Check Status SPMB
+     */
+    public function publicStatus(Request $request)
+    {
+        $searchQuery = trim($request->input('search', ''));
+        $pendaftar = null;
+
+        if (!empty($searchQuery)) {
+            $pendaftar = Pendaftaran::with('jalur.tahunAjaran')
+                ->where(function ($q) use ($searchQuery) {
+                    $q->where('nisn', $searchQuery)
+                      ->orWhere('no_pendaftaran', $searchQuery)
+                      ->orWhere('no_pendaftaran', 'like', "%{$searchQuery}%");
+                })
+                ->first();
+        }
+
+        $sistemSettings = Session::get('spmb_settings', [
+            'tahun_ajaran' => '2026/2027',
+            'gelombang' => 'Gelombang I',
+            'pengumuman' => 'Hasil seleksi berkas dan pengumuman kelas diumumkan secara berkala.',
+        ]);
+
+        return view('spmb.public.status', compact('pendaftar', 'searchQuery', 'sistemSettings'));
+    }
+
+    /**
+     * 5. Public Process Check Status Search
+     */
+    public function publicCheckStatus(Request $request)
+    {
+        $request->validate([
+            'keyword' => 'required|string|max:50',
+        ], [
+            'keyword.required' => 'Masukkan NISN atau Nomor Pendaftaran Anda.',
+        ]);
+
+        $keyword = trim($request->keyword);
+
+        $pendaftar = Pendaftaran::where('nisn', $keyword)
+            ->orWhere('no_pendaftaran', $keyword)
+            ->orWhere('no_pendaftaran', 'like', "%{$keyword}%")
+            ->first();
+
+        if (!$pendaftar) {
+            return redirect()->route('spmb.public.status', ['search' => $keyword])
+                ->with('error', "Data pendaftaran dengan NISN/Nomor '{$keyword}' tidak ditemukan. Mohon periksa kembali nomor Anda.");
+        }
+
+        return redirect()->route('spmb.public.status', ['search' => $keyword])
+            ->with('success', 'Data pendaftaran ditemukan!');
+    }
+
+    /**
+     * 6. Public Printable Proof of Registration (Cetak Bukti SPMB)
+     */
+    public function publicProof($id)
+    {
+        $pendaftar = Pendaftaran::with('jalur.tahunAjaran')->findOrFail($id);
+
+        $sistemSettings = Session::get('spmb_settings', [
+            'tahun_ajaran' => $pendaftar->jalur->tahunAjaran->nama ?? '2026/2027',
+            'gelombang' => 'Gelombang I',
+        ]);
+
+        return view('spmb.public.bukti', compact('pendaftar', 'sistemSettings'));
+    }
 }
