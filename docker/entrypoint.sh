@@ -7,13 +7,22 @@ export PORT=${PORT:-80}
 echo "--> Configuring Nginx for PORT ${PORT}..."
 envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-# Ensure storage directories exist and have proper permissions
+# Ensure storage and database directories exist
 mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
 mkdir -p /var/www/html/storage/logs
 mkdir -p /var/www/html/bootstrap/cache
+mkdir -p /var/www/html/database
 
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Ensure SQLite file exists if using SQLite
+if [ ! -f /var/www/html/database/database.sqlite ]; then
+    echo "--> Initializing database.sqlite..."
+    touch /var/www/html/database/database.sqlite
+fi
+
+# Set directory permissions for www-data
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
+chmod 664 /var/www/html/database/database.sqlite 2>/dev/null || true
 
 # Create storage link if not exists
 if [ ! -L /var/www/html/public/storage ]; then
@@ -27,12 +36,12 @@ php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true
 
-# Run database migrations if configured
-if [ "$RUN_MIGRATIONS" = "true" ] || [ "$AUTO_MIGRATE" = "true" ]; then
+# Run database migrations and seeders automatically
+if [ "$RUN_MIGRATIONS" != "false" ]; then
     echo "--> Running database migrations..."
     php artisan migrate --force || true
     
-    if [ "$RUN_SEEDER" = "true" ]; then
+    if [ "$RUN_SEEDER" != "false" ]; then
         echo "--> Running database seeder..."
         php artisan db:seed --force || true
     fi
