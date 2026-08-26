@@ -1,19 +1,19 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/vue-starter-kit",
+    "name": "dashcool/school-system",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistem Informasi & Manajemen SPMB Sekolah Dashcool",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "spmb",
+        "dashcool"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
-        "tightenco/ziggy": "^2.4"
+        "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
