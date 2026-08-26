@@ -63,7 +63,7 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider block">Belum Ada Kelas</span>
-                <span class="text-2xl font-bold text-amber-800 mt-1 block tabular-nums">{{ $belumAlokasi }}</span>
+                <span class="text-2xl font-bold mt-1 block tabular-nums">{{ $belumAlokasi }}</span>
                 <span class="text-xs text-amber-700 font-semibold mt-0.5 block">Perlu penetapan kelas</span>
             </div>
             <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold border border-amber-200/60">
@@ -73,13 +73,13 @@
     </div>
 
     <!-- CARA PENGALOKASIAN KELAS GUIDANCE -->
-    <div class="bg-slate-100 border border-slate-200/80 rounded-2xl p-4 text-xs text-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-xs text-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
             <div class="w-7 h-7 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                 i
             </div>
             <div>
-                <span class="font-bold block text-sm text-slate-900">Petunjuk Pengalokasian Kelas:</span>
+                <span class="font-bold block text-sm">Petunjuk Pengalokasian Kelas:</span>
                 <span class="text-slate-600">1. Pilih langsung pada kolom <strong>Ubah Kelas</strong> di tabel. 2. Centang beberapa siswa lalu gunakan dropdown <strong>Update Kelas Terpilih (Massal)</strong>. 3. Klik tombol <strong>+ Input Kelas Baru</strong> jika nama kelas belum ada di daftar.</span>
             </div>
         </div>

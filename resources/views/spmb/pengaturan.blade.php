@@ -59,7 +59,7 @@
             </div>
             <div class="flex items-center gap-2">
                 @if($activeTa)
-                    <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold border border-indigo-100">
+                    <span class="px-2.5 py-1 rounded-full bg-slate-50 text-xs font-bold border border-slate-100">
                         T.A: {{ $activeTa->nama }} ({{ $activeTa->semester }})
                     </span>
                 @endif
@@ -104,7 +104,7 @@
                 <div>
                     <label class="block font-bold text-gray-700 uppercase tracking-wider mb-1">Total Target Kuota <span class="text-rose-500">*</span></label>
                     <input type="number" name="total_kuota" value="{{ old('total_kuota', $sistemSettings['total_kuota'] ?? 475) }}" required min="1" 
-                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
                 </div>
 
                 <div>
@@ -135,7 +135,7 @@
             </div>
 
             <div class="flex items-center justify-end border-t border-gray-100 pt-3">
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition-all inline-flex items-center gap-2">
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 shadow-md shadow-indigo-600/20 transition-all inline-flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
@@ -160,7 +160,7 @@
         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tahun Ajaran Aktif</p>
-                <h3 class="text-2xl font-bold text-indigo-700 mt-1">{{ $activeTa?->nama ?? 'Belum Diatur' }}</h3>
+                <h3 class="text-2xl font-bold mt-1">{{ $activeTa?->nama ?? 'Belum Diatur' }}</h3>
                 <p class="text-[11px] text-gray-400">{{ $activeTa?->semester ?? '-' }} &bull; {{ $daftarTahunAjaran->count() }} Total Periode</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
@@ -192,7 +192,7 @@
                 $persen = $j->kuota > 0 ? round(($terisi / $j->kuota) * 100, 1) : 0;
             @endphp
             <tr class="hover:bg-gray-50/80 transition-colors">
-                <td class="px-6 py-4 font-mono font-bold text-xs text-indigo-600 whitespace-nowrap">
+                <td class="px-6 py-4 font-mono font-bold text-xs whitespace-nowrap">
                     {{ $j->kode_jalur }}
                 </td>
 
@@ -215,7 +215,7 @@
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold text-gray-800">
-                    <span class="text-indigo-600 font-bold">{{ $terisi }}</span> / {{ $j->kuota }} Kursi
+                    <span class="font-bold">{{ $terisi }}</span> / {{ $j->kuota }} Kursi
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap w-48">
@@ -264,7 +264,7 @@
                 <h3 class="text-base font-bold text-gray-900">3. Master Data & Relasi Tahun Ajaran</h3>
                 <p class="text-xs text-gray-500">Daftar entitas tahun ajaran sekolah yang terhubung dengan modul SPMB dan jalur pendaftaran</p>
             </div>
-            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 font-bold text-xs shadow-sm transition-all self-start sm:self-auto">
+            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-bold text-xs shadow-sm transition-all self-start sm:self-auto">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>

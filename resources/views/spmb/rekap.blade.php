@@ -51,7 +51,7 @@
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
             <span class="text-xs font-semibold text-amber-700 block uppercase tracking-wider">Menunggu</span>
-            <div class="text-2xl font-bold text-amber-800 mt-1 tabular-nums">{{ number_format($rekapStatus['menunggu'], 0, ',', '.') }}</div>
+            <div class="text-2xl font-bold text-amber-700 mt-1 tabular-nums">{{ number_format($rekapStatus['menunggu'], 0, ',', '.') }}</div>
             <span class="text-xs text-slate-500 mt-1 block">Belum Diverifikasi</span>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
@@ -120,9 +120,9 @@
                             <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
                                 {{ $loop->iteration }}
                             </span>
-                            <span class="font-bold text-slate-900 truncate">{{ $rs->asal_sekolah }}</span>
+                            <span class="font-bold text-slate-900 truncate">{{ $rs['sekolah'] }}</span>
                         </div>
-                        <span class="font-bold text-slate-900 tabular-nums flex-shrink-0">{{ $rs->total }} Siswa</span>
+                        <span class="font-bold text-slate-900 tabular-nums flex-shrink-0">{{ $rs['total'] }} Siswa</span>
                     </div>
                 @empty
                     <div class="p-6 text-center text-xs text-slate-400">
