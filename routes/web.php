@@ -5,6 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SpmbController;
 use App\Http\Controllers\AuthController;
 
+// Root URL -> Tampilan Umum (Portal Publik Pendaftaran SPMB Online)
+Route::get('/', [SpmbController::class, 'publicRegister'])->name('home');
+
 // Guest Routes
 Route::middleware(['guest.custom'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -32,11 +35,6 @@ Route::get('/status', function () {
 
 // Logout Route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Redirect root to Dashboard
-Route::get('/', function () {
-    return redirect()->route('dashboard');
-})->name('home');
 
 // Protected Routes (Requires Authentication)
 Route::middleware(['auth.custom'])->group(function () {
