@@ -56,7 +56,7 @@
             <!-- Mobile Sidebar Header -->
             <div class="h-16 flex items-center justify-between px-6 border-b border-gray-100">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0" alt="Dashcool Logo">
+                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0 grayscale brightness-0" alt="Dashcool Logo">
                     <div>
                         <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">Dashcool</h1>
                         <span class="text-xs text-indigo-600 font-semibold">Sistem Informasi</span>
@@ -95,7 +95,7 @@
             <!-- Sidebar Header -->
             <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3 overflow-hidden">
-                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0" alt="Dashcool Logo">
+                    <img src="{{ asset('logo.webp') }}" class="w-11 h-11 object-contain flex-shrink-0 grayscale brightness-0" alt="Dashcool Logo">
                     <div x-show="!isCollapsed" x-transition class="truncate">
                         <h1 class="text-base font-bold text-gray-900 tracking-tight leading-none">Dashcool</h1>
                         <span class="text-xs text-indigo-600 font-semibold">Sistem Informasi</span>

@@ -20,34 +20,34 @@
         body { font-family: 'Instrument Sans', sans-serif; }
     </style>
 </head>
-<body class="h-full bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+<body class="h-full bg-slate-50 flex items-start justify-center pt-12 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-y-auto">
     
     <!-- Background Decorator Blobs -->
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-slate-200/40 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="w-full max-w-md space-y-8 relative z-10">
         
         <!-- HEADER / BRANDING -->
         <div class="text-center">
-            <img src="{{ asset('logo.webp') }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain mx-auto mb-3 drop-shadow-sm" alt="Dashcool Logo">
+            <img src="{{ asset('logo.webp') }}" class="w-20 h-20 sm:w-24 sm:h-24 object-contain mx-auto mb-3 drop-shadow-sm grayscale brightness-0" alt="Dashcool Logo">
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight sm:text-3xl">Dashcool</h1>
             <p class="mt-1 text-sm text-gray-500">Sistem Informasi Manajemen Sekolah Terpadu</p>
         </div>
 
         <!-- PUBLIC SPMB REGISTRATION BANNER FOR STUDENTS & PARENTS -->
-        <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-indigo-950/20 border border-indigo-500/30 space-y-3">
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-5 text-white shadow-lg shadow-slate-950/20 border border-slate-500/30 space-y-3">
             <div class="flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-indigo-100 text-[11px] font-bold">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-slate-100 text-[11px] font-bold">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     SPMB Online Dibuka
                 </span>
-                <span class="text-[11px] font-semibold text-indigo-200">T.A 2026/2027</span>
+                <span class="text-[11px] font-semibold text-slate-200">T.A 2026/2027</span>
             </div>
 
             <div>
                 <h2 class="text-base font-bold text-white leading-snug">Pendaftaran Siswa Baru</h2>
-                <p class="text-xs text-indigo-200 mt-0.5 leading-relaxed">Calon peserta didik dan orang tua dapat langsung mendaftar secara online melalui ponsel.</p>
+                <p class="text-xs text-slate-200 mt-0.5 leading-relaxed">Calon peserta didik dan orang tua dapat langsung mendaftar secara online melalui ponsel.</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2 pt-1">
@@ -124,7 +124,7 @@
                                required 
                                autofocus 
                                placeholder="nama@dashcool.sch.id"
-                               class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all text-gray-900 placeholder-gray-400">
+                               class="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-600 transition-all text-gray-900 placeholder-gray-400">
                     </div>
                 </div>
 
@@ -134,7 +134,7 @@
                         <label for="password" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Kata Sandi
                         </label>
-                        <a href="#" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+                        <a href="#" class="text-xs font-semibold text-slate-600 hover:text-slate-800 transition-colors">
                             Lupa kata sandi?
                         </a>
                     </div>
@@ -150,7 +150,7 @@
                                value="password"
                                required 
                                placeholder="••••••••"
-                               class="w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all text-gray-900 placeholder-gray-400">
+                               class="w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-600 transition-all text-gray-900 placeholder-gray-400">
                         <button type="button" 
                                 @click="showPassword = !showPassword" 
                                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
@@ -168,13 +168,13 @@
                 <!-- REMEMBER ME CHECKBOX -->
                 <div class="flex items-center justify-between">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                        <input type="checkbox" name="remember" class="w-4 h-4 text-slate-600 rounded border-gray-300 focus:ring-slate-500">
                         <span class="text-xs font-medium text-gray-600">Ingat saya di perangkat ini</span>
                     </label>
                 </div>
 
                 <!-- SUBMIT BUTTON -->
-                <button type="submit" class="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2">
+                <button type="submit" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-900 text-white font-bold text-sm shadow-md shadow-slate-600/20 transition-all flex items-center justify-center gap-2">
                     Masuk ke Sistem
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -182,14 +182,14 @@
                 </button>
             </form>
 
-            <!-- DEMO ACCOUNT HINT BOX -->
+            <!-- DEMO ACCOUNT HINT BOX
             <div class="mt-6 pt-5 border-t border-gray-100 bg-gray-50/70 -mx-8 -mb-8 p-6 rounded-b-2xl">
                 <p class="text-xs font-bold text-gray-700 mb-1">Akun Demo Administrator:</p>
                 <div class="text-xs text-gray-500 space-y-0.5 font-mono">
-                    <p><span class="text-gray-400">Email:</span> admin@dashcool.sch.id</p>
+                    <p><span class="text-gray-400">Email:</span> [EMAIL_ADDRESS]</p>
                     <p><span class="text-gray-400">Password:</span> password</p>
                 </div>
-            </div>
+            </div>-->
         </div>
 
         <!-- FOOTER -->
