@@ -58,7 +58,7 @@
     @endif
 
     <!-- FORM INPUT PENDAFTARAN -->
-    <form action="{{ route('spmb.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('spmb.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- SECTION 1: PILIHAN JALUR SPMB -->
@@ -252,6 +252,77 @@
                     <input type="text" name="no_hp_ibu" value="{{ old('no_hp_ibu') }}" placeholder="0813xxxxxxxx" 
                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                 </div>
+            </div>
+        <!-- SECTION 5: UPLOAD BERKAS DOKUMEN (OPSIONAL) -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-xs">5</div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Upload Berkas & Dokumen Pendaftaran</h3>
+                        <p class="text-xs text-slate-500">Lampirkan scan/foto dokumen calon peserta didik (Format: JPG, PNG, PDF &bull; Maks: 3-5MB)</p>
+                    </div>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Opsional</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+                
+                <!-- 1. Pas Foto Siswa -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Pas Foto Siswa (3x4)</label>
+                        <span class="text-[10px] font-mono text-slate-500">JPG/PNG</span>
+                    </div>
+                    <input type="file" name="berkas_foto" accept="image/jpeg,image/png,image/webp" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                    <p class="text-[11px] text-slate-400">Foto resmi latar merah/biru, maks 3MB.</p>
+                </div>
+
+                <!-- 2. Kartu Keluarga -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Kartu Keluarga (KK)</label>
+                        <span class="text-[10px] font-mono text-slate-500">PDF/JPG/PNG</span>
+                    </div>
+                    <input type="file" name="berkas_kk" accept="application/pdf,image/jpeg,image/png" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                    <p class="text-[11px] text-slate-400">Scan Kartu Keluarga terbaru, maks 5MB.</p>
+                </div>
+
+                <!-- 3. Akta Kelahiran -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Akta Kelahiran</label>
+                        <span class="text-[10px] font-mono text-slate-500">PDF/JPG/PNG</span>
+                    </div>
+                    <input type="file" name="berkas_akta" accept="application/pdf,image/jpeg,image/png" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                    <p class="text-[11px] text-slate-400">Scan Akta Kelahiran resmi, maks 5MB.</p>
+                </div>
+
+                <!-- 4. Ijazah / SKL / Rapor -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Ijazah / SKL / Rapor</label>
+                        <span class="text-[10px] font-mono text-slate-500">PDF/JPG/PNG</span>
+                    </div>
+                    <input type="file" name="berkas_ijazah" accept="application/pdf,image/jpeg,image/png" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                    <p class="text-[11px] text-slate-400">Surat Keterangan Lulus / Ijazah SMP, maks 5MB.</p>
+                </div>
+
+                <!-- 5. Sertifikat Prestasi (Opsional) -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2 md:col-span-2 lg:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Sertifikat Prestasi (Opsional)</label>
+                        <span class="text-[10px] font-mono text-slate-500">PDF/JPG/PNG</span>
+                    </div>
+                    <input type="file" name="berkas_sertifikat" accept="application/pdf,image/jpeg,image/png" 
+                           class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                    <p class="text-[11px] text-slate-400">Piagam lomba akademik / non-akademik (khusus jalur prestasi/tambahan), maks 5MB.</p>
+                </div>
+
             </div>
         </div>
 

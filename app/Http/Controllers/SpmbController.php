@@ -180,10 +180,47 @@ class SpmbController extends Controller
             'no_hp_ibu' => 'nullable|string|max:20',
             'jalur_id' => 'required|exists:spmb_set,id',
             'catatan_verifikasi' => 'nullable|string',
+            'berkas_foto' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:3072',
+            'berkas_kk' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_akta' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_ijazah' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_sertifikat' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
         ]);
 
         $validated['no_pendaftaran'] = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
         $validated['status'] = 'menunggu';
+
+        // Process Document File Uploads
+        $dokumen = [];
+        $docMap = [
+            'berkas_foto' => 'Pas Foto Siswa',
+            'berkas_kk' => 'Kartu Keluarga (KK)',
+            'berkas_akta' => 'Akta Kelahiran',
+            'berkas_ijazah' => 'Ijazah / SKL / Rapor',
+            'berkas_sertifikat' => 'Sertifikat Prestasi',
+        ];
+
+        foreach ($docMap as $inputKey => $label) {
+            if ($request->hasFile($inputKey)) {
+                $file = $request->file($inputKey);
+                $fileName = time() . '_' . $inputKey . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('spmb_dokumen/' . $validated['no_pendaftaran'], $fileName, 'public');
+
+                $dokumen[$inputKey] = [
+                    'key' => $inputKey,
+                    'label' => $label,
+                    'filename' => $fileName,
+                    'original_name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'url' => asset('storage/' . $path),
+                    'size' => round($file->getSize() / 1024, 1) . ' KB',
+                    'mime' => $file->getClientMimeType(),
+                    'uploaded_at' => now()->toDateTimeString(),
+                ];
+            }
+        }
+
+        $validated['dokumen'] = !empty($dokumen) ? $dokumen : null;
 
         $pendaftar = Pendaftaran::create($validated);
 
@@ -747,6 +784,11 @@ class SpmbController extends Controller
             'pekerjaan_ibu' => 'nullable|string|max:100',
             'no_hp_ibu' => 'nullable|string|max:20',
             'jalur_id' => 'required|exists:spmb_set,id',
+            'berkas_foto' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:3072',
+            'berkas_kk' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_akta' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_ijazah' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'berkas_sertifikat' => 'nullable|file|mimes:pdf,jpeg,jpg,png|max:5120',
         ], [
             'nama_lengkap.required' => 'Nama lengkap calon siswa wajib diisi.',
             'nisn.required' => 'Nomor Induk Siswa Nasional (NISN) wajib diisi.',
@@ -760,10 +802,52 @@ class SpmbController extends Controller
             'nama_ayah.required' => 'Nama ayah kandung wajib diisi.',
             'nama_ibu.required' => 'Nama ibu kandung wajib diisi.',
             'jalur_id.required' => 'Silakan pilih salah satu jalur pendaftaran yang tersedia.',
+            'berkas_foto.max' => 'Ukuran Pas Foto maksimal 3MB.',
+            'berkas_foto.mimes' => 'Format Pas Foto harus JPG, PNG, atau WebP.',
+            'berkas_kk.max' => 'Ukuran file Kartu Keluarga maksimal 5MB.',
+            'berkas_kk.mimes' => 'Format file Kartu Keluarga harus PDF, JPG, atau PNG.',
+            'berkas_akta.max' => 'Ukuran file Akta Kelahiran maksimal 5MB.',
+            'berkas_akta.mimes' => 'Format file Akta Kelahiran harus PDF, JPG, atau PNG.',
+            'berkas_ijazah.max' => 'Ukuran file Ijazah/SKL maksimal 5MB.',
+            'berkas_ijazah.mimes' => 'Format file Ijazah/SKL harus PDF, JPG, atau PNG.',
+            'berkas_sertifikat.max' => 'Ukuran file Sertifikat maksimal 5MB.',
+            'berkas_sertifikat.mimes' => 'Format file Sertifikat harus PDF, JPG, atau PNG.',
         ]);
 
         $validated['no_pendaftaran'] = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
         $validated['status'] = 'menunggu';
+
+        // Process Document File Uploads
+        $dokumen = [];
+        $docMap = [
+            'berkas_foto' => 'Pas Foto Siswa',
+            'berkas_kk' => 'Kartu Keluarga (KK)',
+            'berkas_akta' => 'Akta Kelahiran',
+            'berkas_ijazah' => 'Ijazah / SKL / Rapor',
+            'berkas_sertifikat' => 'Sertifikat Prestasi',
+        ];
+
+        foreach ($docMap as $inputKey => $label) {
+            if ($request->hasFile($inputKey)) {
+                $file = $request->file($inputKey);
+                $fileName = time() . '_' . $inputKey . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('spmb_dokumen/' . $validated['no_pendaftaran'], $fileName, 'public');
+
+                $dokumen[$inputKey] = [
+                    'key' => $inputKey,
+                    'label' => $label,
+                    'filename' => $fileName,
+                    'original_name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'url' => asset('storage/' . $path),
+                    'size' => round($file->getSize() / 1024, 1) . ' KB',
+                    'mime' => $file->getClientMimeType(),
+                    'uploaded_at' => now()->toDateTimeString(),
+                ];
+            }
+        }
+
+        $validated['dokumen'] = !empty($dokumen) ? $dokumen : null;
 
         $pendaftar = Pendaftaran::create($validated);
 

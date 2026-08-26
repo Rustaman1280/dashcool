@@ -214,77 +214,68 @@
         <!-- RIGHT SECTION: DOCUMENT PREVIEWS -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between space-y-6">
             <div>
+                @php
+                    $dokumenList = [
+                        'berkas_foto' => ['title' => 'Pas Foto Siswa (3x4)', 'default_type' => 'JPG', 'color' => 'bg-emerald-50 text-emerald-600'],
+                        'berkas_kk' => ['title' => 'Kartu Keluarga (KK)', 'default_type' => 'PDF', 'color' => 'bg-rose-50 text-rose-600'],
+                        'berkas_akta' => ['title' => 'Akta Kelahiran', 'default_type' => 'PDF', 'color' => 'bg-rose-50 text-rose-600'],
+                        'berkas_ijazah' => ['title' => 'Ijazah / SKL / Rapor', 'default_type' => 'PDF', 'color' => 'bg-indigo-50 text-indigo-600'],
+                        'berkas_sertifikat' => ['title' => 'Sertifikat Prestasi', 'default_type' => 'DOC', 'color' => 'bg-amber-50 text-amber-600'],
+                    ];
+                    $uploadedDocs = is_array($pendaftar->dokumen) ? $pendaftar->dokumen : json_decode($pendaftar->dokumen, true) ?? [];
+                    $totalUploaded = count($uploadedDocs);
+                @endphp
+
                 <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
                     <h3 class="text-base font-bold text-gray-900">Berkas Upload</h3>
-                    <span class="text-xs text-gray-400">4 Berkas</span>
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full {{ $totalUploaded > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500' }}">
+                        {{ $totalUploaded }} dari {{ count($dokumenList) }} Terlampir
+                    </span>
                 </div>
 
                 <div class="space-y-3">
-                    
-                    <!-- Kartu Keluarga -->
-                    <div class="p-3.5 rounded-xl border border-gray-100 bg-gray-50/50 hover:border-indigo-200 transition-colors flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                PDF
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-900">Kartu Keluarga (KK)</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Verified &bull; 1.2 MB</p>
-                            </div>
-                        </div>
-                        <button class="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:text-indigo-600 text-xs font-semibold shadow-sm">
-                            Preview
-                        </button>
-                    </div>
+                    @foreach ($dokumenList as $docKey => $info)
+                        @php
+                            $doc = $uploadedDocs[$docKey] ?? null;
+                            $hasFile = !empty($doc) && !empty($doc['path']);
+                            $ext = $hasFile ? strtoupper(pathinfo($doc['path'], PATHINFO_EXTENSION)) : $info['default_type'];
+                        @endphp
 
-                    <!-- Akta Kelahiran -->
-                    <div class="p-3.5 rounded-xl border border-gray-100 bg-gray-50/50 hover:border-indigo-200 transition-colors flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                PDF
+                        @if ($hasFile)
+                            <div class="p-3.5 rounded-xl border border-gray-200/80 bg-gray-50/50 hover:border-indigo-300 transition-colors flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-lg {{ $info['color'] }} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                        {{ $ext }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs font-bold text-gray-900 truncate">{{ $doc['label'] ?? $info['title'] }}</p>
+                                        <p class="text-[11px] text-gray-500 truncate mt-0.5" title="{{ $doc['original_name'] ?? '' }}">
+                                            {{ $doc['size'] ?? 'Terverifikasi' }} &bull; {{ $doc['original_name'] ?? 'dokumen' }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <a href="{{ asset('storage/' . $doc['path']) }}" target="_blank" class="p-2 px-3 rounded-lg bg-white border border-gray-200 text-indigo-600 hover:bg-indigo-50 text-xs font-bold shadow-xs flex-shrink-0 inline-flex items-center gap-1">
+                                    <span>Lihat</span>
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                    </svg>
+                                </a>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-900">Akta Kelahiran</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Verified &bull; 850 KB</p>
+                        @else
+                            <div class="p-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/30 flex items-center justify-between opacity-60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-[10px]">
+                                        {{ $info['default_type'] }}
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-medium text-gray-600">{{ $info['title'] }}</p>
+                                        <p class="text-[10px] text-gray-400">Belum diunggah</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded font-mono">Kosong</span>
                             </div>
-                        </div>
-                        <button class="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:text-indigo-600 text-xs font-semibold shadow-sm">
-                            Preview
-                        </button>
-                    </div>
-
-                    <!-- Rapor Semester 1-5 -->
-                    <div class="p-3.5 rounded-xl border border-gray-100 bg-gray-50/50 hover:border-indigo-200 transition-colors flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                DOC
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-900">Rapor SMP (Smstr 1-5)</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Rata-rata: 87.5</p>
-                            </div>
-                        </div>
-                        <button class="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:text-indigo-600 text-xs font-semibold shadow-sm">
-                            Preview
-                        </button>
-                    </div>
-
-                    <!-- Pas Foto 3x4 -->
-                    <div class="p-3.5 rounded-xl border border-gray-100 bg-gray-50/50 hover:border-indigo-200 transition-colors flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                                JPG
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-900">Pas Foto Berwarna (3x4)</p>
-                                <p class="text-[10px] text-gray-400 mt-0.5">Latar Merah &bull; 400 KB</p>
-                            </div>
-                        </div>
-                        <button class="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:text-indigo-600 text-xs font-semibold shadow-sm">
-                            Preview
-                        </button>
-                    </div>
-
+                        @endif
+                    @endforeach
                 </div>
             </div>
 

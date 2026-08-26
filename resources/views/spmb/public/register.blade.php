@@ -8,7 +8,7 @@
 {{-- Hallmark · macrostructure: Focus-Flow · genre: modern-minimal · tone: soft · designed-as-app --}}
 <div x-data="spmbRegisterForm()" class="space-y-4 pb-20">
 
-    <!-- REASSURING HERO HEADER CARD -->
+    <!-- HERO HEADER CARD -->
     <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-2.5">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-xs font-semibold">
@@ -49,7 +49,7 @@
     @endif
 
     <!-- STEPPER PROGRESS BAR -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 space-y-3">
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 space-y-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <span class="w-6 h-6 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center" x-text="step"></span>
@@ -78,7 +78,7 @@
     </div>
 
     <!-- MAIN FORM -->
-    <form action="{{ route('spmb.public.store') }}" method="POST" id="registerForm" @submit="handleSubmit($event)">
+    <form action="{{ route('spmb.public.store') }}" method="POST" id="registerForm" enctype="multipart/form-data" @submit="handleSubmit($event)">
         @csrf
 
         <!-- ========================================================= -->
@@ -86,7 +86,7 @@
         <!-- ========================================================= -->
         <div x-show="step === 1" x-transition.opacity.duration.200ms class="space-y-4">
             
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
                     <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-900 font-bold text-xs flex items-center justify-center">1</span>
                     <div>
@@ -98,7 +98,7 @@
                 <div class="space-y-3 pt-1">
                     @forelse ($jalurs as $j)
                         <label class="relative flex flex-col p-4 rounded-2xl border-2 transition-colors cursor-pointer select-none"
-                               :class="form.jalur_id == {{ $j->id }} ? 'border-slate-900 bg-slate-50/70 shadow-sm' : 'border-slate-200/80 bg-white hover:bg-slate-50/50'">
+                               :class="form.jalur_id == {{ $j->id }} ? 'border-slate-900 bg-slate-50/70 shadow-xs' : 'border-slate-200/80 bg-white hover:bg-slate-50/50'">
                             
                             <input type="radio" 
                                    name="jalur_id" 
@@ -150,23 +150,23 @@
                     <span>Persyaratan Umum SPMB:</span>
                 </p>
                 <p class="text-slate-600 leading-relaxed">
-                    Calon siswa wajib melengkapi data NISN aktif, data sekolah asal, serta nomor kontak WhatsApp orang tua/wali untuk pengiriman notifikasi pengumuman hasil seleksi.
+                    Calon siswa wajib melengkapi data identitas, asal sekolah, kontak orang tua, dan mengunggah berkas persyaratan pendaftaran (Pas Foto, KK, Akta, SKL/Ijazah).
                 </p>
             </div>
 
         </div>
 
         <!-- ========================================================= -->
-        <!-- STEP 2: DATA DIRI CALON SISWA -->
+        <!-- STEP 2: DATA DIRI CALON SISWA & ASAL SEKOLAH -->
         <!-- ========================================================= -->
         <div x-show="step === 2" x-transition.opacity.duration.200ms class="space-y-4">
             
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
                     <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-900 font-bold text-xs flex items-center justify-center">2</span>
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900">Data Diri Calon Siswa</h3>
-                        <p class="text-xs text-slate-500">Identitas lengkap calon peserta didik</p>
+                        <h3 class="text-sm font-bold text-slate-900">Data Diri & Asal Sekolah</h3>
+                        <p class="text-xs text-slate-500">Identitas lengkap calon siswa dan sekolah sebelumnya</p>
                     </div>
                 </div>
 
@@ -182,7 +182,7 @@
                                x-model="form.nama_lengkap"
                                required 
                                placeholder="Nama lengkap sesuai Ijazah / Akta" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                               class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                     </div>
 
                     <!-- NISN -->
@@ -199,7 +199,7 @@
                                maxlength="10"
                                required 
                                placeholder="Contoh: 0071234567" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                               class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                     </div>
 
                     <!-- NIK & KK -->
@@ -213,7 +213,7 @@
                                    x-model="form.nik"
                                    maxlength="16"
                                    placeholder="Nomor KTP / KIA / KK" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -224,7 +224,7 @@
                                    x-model="form.no_kk"
                                    maxlength="16"
                                    placeholder="Nomor KK (16 digit)" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                     </div>
 
@@ -234,14 +234,14 @@
                             Jenis Kelamin <span class="text-rose-500">*</span>
                         </label>
                         <div class="grid grid-cols-2 gap-3">
-                            <label class="flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-colors text-xs font-bold"
-                                   :class="form.jenis_kelamin === 'L' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-sm' : 'border-slate-200 bg-white text-slate-600'">
+                            <label class="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-colors text-xs font-bold"
+                                   :class="form.jenis_kelamin === 'L' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-xs' : 'border-slate-200 bg-white text-slate-600'">
                                 <input type="radio" name="jenis_kelamin" value="L" x-model="form.jenis_kelamin" class="sr-only">
                                 <span>Laki-Laki</span>
                             </label>
 
-                            <label class="flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-colors text-xs font-bold"
-                                   :class="form.jenis_kelamin === 'P' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-sm' : 'border-slate-200 bg-white text-slate-600'">
+                            <label class="flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-colors text-xs font-bold"
+                                   :class="form.jenis_kelamin === 'P' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-xs' : 'border-slate-200 bg-white text-slate-600'">
                                 <input type="radio" name="jenis_kelamin" value="P" x-model="form.jenis_kelamin" class="sr-only">
                                 <span>Perempuan</span>
                             </label>
@@ -259,7 +259,7 @@
                                    x-model="form.tempat_lahir"
                                    required 
                                    placeholder="Kota / Kabupaten Lahir" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
 
                         <div>
@@ -270,7 +270,7 @@
                                    name="tanggal_lahir" 
                                    x-model="form.tanggal_lahir"
                                    required 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                     </div>
 
@@ -282,7 +282,7 @@
                         <select name="agama" 
                                 x-model="form.agama" 
                                 required 
-                                class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                             <option value="Islam">Islam</option>
                             <option value="Kristen">Kristen Protestan</option>
                             <option value="Katolik">Katolik</option>
@@ -302,7 +302,7 @@
                                    name="telepon" 
                                    x-model="form.telepon"
                                    placeholder="0812xxxxxxxx" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
 
                         <div>
@@ -313,7 +313,34 @@
                                    name="email" 
                                    x-model="form.email"
                                    placeholder="nama@email.com" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Data Sekolah Asal -->
+                    <div class="pt-3 border-t border-slate-100 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                Nama Sekolah Asal (SMP / MTs) <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="asal_sekolah" 
+                                   x-model="form.asal_sekolah"
+                                   required 
+                                   placeholder="Contoh: SMP Negeri 1 Jakarta / MTs Negeri 2" 
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                NPSN Sekolah Asal (8 Digit)
+                            </label>
+                            <input type="tel" 
+                                   name="npsn_asal" 
+                                   x-model="form.npsn_asal"
+                                   maxlength="8"
+                                   placeholder="Contoh: 20104567" 
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                     </div>
 
@@ -324,10 +351,10 @@
                         </label>
                         <textarea name="alamat" 
                                   x-model="form.alamat"
-                                  rows="3" 
+                                  rows="2" 
                                   required 
                                   placeholder="Nama jalan, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten" 
-                                  class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white"></textarea>
+                                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white"></textarea>
                     </div>
 
                 </div>
@@ -336,61 +363,17 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- STEP 3: DATA ASAL SEKOLAH -->
+        <!-- STEP 3: DATA ORANG TUA / WALI -->
         <!-- ========================================================= -->
         <div x-show="step === 3" x-transition.opacity.duration.200ms class="space-y-4">
             
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
-                <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                    <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-900 font-bold text-xs flex items-center justify-center">3</span>
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-900">Data Sekolah Asal</h3>
-                        <p class="text-xs text-slate-500">Informasi SMP / MTs sekolah sebelumnya</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4 pt-1">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                            Nama Sekolah Asal (SMP / MTs) <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" 
-                               name="asal_sekolah" 
-                               x-model="form.asal_sekolah"
-                               required 
-                               placeholder="Contoh: SMP Negeri 1 Jakarta / MTs Negeri 2" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                            NPSN Sekolah Asal (8 Digit)
-                        </label>
-                        <input type="tel" 
-                               name="npsn_asal" 
-                               x-model="form.npsn_asal"
-                               maxlength="8"
-                               placeholder="Contoh: 20104567" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
-                        <p class="text-xs text-slate-400 mt-1">Kosongkan jika belum mengetahui nomor NPSN sekolah asal.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ========================================================= -->
-        <!-- STEP 4: DATA ORANG TUA / WALI -->
-        <!-- ========================================================= -->
-        <div x-show="step === 4" x-transition.opacity.duration.200ms class="space-y-4">
-            
             <!-- AYAH -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
                     <div class="w-7 h-7 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center">A</div>
                     <div>
                         <h3 class="text-sm font-bold text-slate-900">Data Ayah Kandung / Wali</h3>
-                        <p class="text-xs text-slate-500">Identitas dan nomor kontak ayah</p>
+                        <p class="text-xs text-slate-500">Identitas dan kontak ayah</p>
                     </div>
                 </div>
 
@@ -404,7 +387,7 @@
                                x-model="form.nama_ayah"
                                required 
                                placeholder="Nama lengkap Ayah" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                               class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -416,7 +399,7 @@
                                    name="pekerjaan_ayah" 
                                    x-model="form.pekerjaan_ayah"
                                    placeholder="PNS / Wiraswasta / Karyawan" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
 
                         <div>
@@ -427,19 +410,19 @@
                                    name="no_hp_ayah" 
                                    x-model="form.no_hp_ayah"
                                    placeholder="0812xxxxxxxx" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- IBU -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
                     <div class="w-7 h-7 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center">I</div>
                     <div>
                         <h3 class="text-sm font-bold text-slate-900">Data Ibu Kandung</h3>
-                        <p class="text-xs text-slate-500">Identitas dan nomor kontak ibu</p>
+                        <p class="text-xs text-slate-500">Identitas dan kontak ibu</p>
                     </div>
                 </div>
 
@@ -453,7 +436,7 @@
                                x-model="form.nama_ibu"
                                required 
                                placeholder="Nama lengkap Ibu" 
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                               class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -465,7 +448,7 @@
                                    name="pekerjaan_ibu" 
                                    x-model="form.pekerjaan_ibu"
                                    placeholder="Ibu Rumah Tangga / PNS / Swasta" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
 
                         <div>
@@ -476,10 +459,120 @@
                                    name="no_hp_ibu" 
                                    x-model="form.no_hp_ibu"
                                    placeholder="0813xxxxxxxx" 
-                                   class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm sm:text-base font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
+                                   class="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-sm font-mono tabular-nums focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors bg-white">
                         </div>
                     </div>
                 </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- STEP 4: UPLOAD BERKAS PERSYARATAN -->
+        <!-- ========================================================= -->
+        <div x-show="step === 4" x-transition.opacity.duration.200ms class="space-y-4">
+            
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-900 font-bold text-xs flex items-center justify-center">4</span>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900">Upload Berkas Persyaratan</h3>
+                            <p class="text-xs text-slate-500">Unggah foto/scan dokumen calon peserta didik</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">Opsional</span>
+                </div>
+
+                <div class="space-y-4 pt-1">
+                    
+                    <!-- 1. Pas Foto Siswa -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                1. Pas Foto Siswa (3x4)
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded">JPG / PNG (Maks 3MB)</span>
+                        </div>
+                        <input type="file" 
+                               name="berkas_foto" 
+                               accept="image/jpeg,image/png,image/webp"
+                               @change="files.foto = $event.target.files[0]?.name || ''"
+                               class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                        <p class="text-[11px] text-slate-500" x-show="files.foto" x-text="`✓ Terpilih: ${files.foto}`"></p>
+                    </div>
+
+                    <!-- 2. Kartu Keluarga -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                2. Kartu Keluarga (KK)
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded">PDF / JPG / PNG (Maks 5MB)</span>
+                        </div>
+                        <input type="file" 
+                               name="berkas_kk" 
+                               accept="application/pdf,image/jpeg,image/png"
+                               @change="files.kk = $event.target.files[0]?.name || ''"
+                               class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                        <p class="text-[11px] text-slate-500" x-show="files.kk" x-text="`✓ Terpilih: ${files.kk}`"></p>
+                    </div>
+
+                    <!-- 3. Akta Kelahiran -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                3. Akta Kelahiran
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded">PDF / JPG / PNG (Maks 5MB)</span>
+                        </div>
+                        <input type="file" 
+                               name="berkas_akta" 
+                               accept="application/pdf,image/jpeg,image/png"
+                               @change="files.akta = $event.target.files[0]?.name || ''"
+                               class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                        <p class="text-[11px] text-slate-500" x-show="files.akta" x-text="`✓ Terpilih: ${files.akta}`"></p>
+                    </div>
+
+                    <!-- 4. Ijazah / SKL / Rapor -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                4. Ijazah / SKL / Rapor SMP
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded">PDF / JPG / PNG (Maks 5MB)</span>
+                        </div>
+                        <input type="file" 
+                               name="berkas_ijazah" 
+                               accept="application/pdf,image/jpeg,image/png"
+                               @change="files.ijazah = $event.target.files[0]?.name || ''"
+                               class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                        <p class="text-[11px] text-slate-500" x-show="files.ijazah" x-text="`✓ Terpilih: ${files.ijazah}`"></p>
+                    </div>
+
+                    <!-- 5. Sertifikat Prestasi -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+                                5. Sertifikat Prestasi (Opsional)
+                            </label>
+                            <span class="text-[10px] font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded">PDF / JPG / PNG (Maks 5MB)</span>
+                        </div>
+                        <input type="file" 
+                               name="berkas_sertifikat" 
+                               accept="application/pdf,image/jpeg,image/png"
+                               @change="files.sertifikat = $event.target.files[0]?.name || ''"
+                               class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-200 rounded-xl bg-white p-1">
+                        <p class="text-[11px] text-slate-500" x-show="files.sertifikat" x-text="`✓ Terpilih: ${files.sertifikat}`"></p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Petunjuk Berkas -->
+            <div class="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-xs text-slate-600 space-y-1">
+                <p class="font-bold text-slate-900">Catatan Unggah Berkas:</p>
+                <p>Berkas yang belum sempat diunggah dapat diserahkan langsung ke Panitia SPMB saat verifikasi berkas fisik atau daftar ulang.</p>
             </div>
 
         </div>
@@ -489,7 +582,7 @@
         <!-- ========================================================= -->
         <div x-show="step === 5" x-transition.opacity.duration.200ms class="space-y-4">
             
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100">
                     <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">✓</span>
                     <div>
@@ -518,19 +611,9 @@
                             <div><span class="text-slate-400 block text-xs">NISN:</span> <strong class="font-mono font-bold text-slate-900 tabular-nums" x-text="form.nisn || '-'"></strong></div>
                             <div><span class="text-slate-400 block text-xs">Jenis Kelamin:</span> <span x-text="form.jenis_kelamin === 'L' ? 'Laki-Laki' : 'Perempuan'"></span></div>
                             <div><span class="text-slate-400 block text-xs">Tempat, Tgl Lahir:</span> <span x-text="`${form.tempat_lahir || '-'}, ${form.tanggal_lahir || '-'}`"></span></div>
+                            <div><span class="text-slate-400 block text-xs">Asal Sekolah:</span> <span class="font-semibold text-slate-900" x-text="form.asal_sekolah || '-'"></span></div>
+                            <div><span class="text-slate-400 block text-xs">Kontak Siswa:</span> <span x-text="form.telepon || '-'"></span></div>
                             <div class="col-span-2"><span class="text-slate-400 block text-xs">Alamat:</span> <span class="text-slate-800" x-text="form.alamat || '-'"></span></div>
-                        </div>
-                    </div>
-
-                    <!-- Asal Sekolah -->
-                    <div class="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200 space-y-2">
-                        <div class="flex items-center justify-between border-b border-slate-200/60 pb-1.5">
-                            <span class="font-bold text-slate-900 uppercase tracking-wider text-xs">Asal Sekolah</span>
-                            <button type="button" @click="step = 3" class="text-slate-900 font-bold hover:underline">Ubah</button>
-                        </div>
-                        <div class="text-slate-700">
-                            <p class="font-bold text-slate-900" x-text="form.asal_sekolah || '-'"></p>
-                            <p class="text-slate-500 font-mono text-xs tabular-nums" x-show="form.npsn_asal" x-text="`NPSN: ${form.npsn_asal}`"></p>
                         </div>
                     </div>
 
@@ -538,12 +621,38 @@
                     <div class="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200 space-y-2">
                         <div class="flex items-center justify-between border-b border-slate-200/60 pb-1.5">
                             <span class="font-bold text-slate-900 uppercase tracking-wider text-xs">Orang Tua / Wali</span>
-                            <button type="button" @click="step = 4" class="text-slate-900 font-bold hover:underline">Ubah</button>
+                            <button type="button" @click="step = 3" class="text-slate-900 font-bold hover:underline">Ubah</button>
                         </div>
                         <div class="grid grid-cols-2 gap-y-2 text-slate-700">
                             <div><span class="text-slate-400 block text-xs">Ayah:</span> <span class="font-semibold text-slate-900" x-text="form.nama_ayah || '-'"></span></div>
                             <div><span class="text-slate-400 block text-xs">Ibu:</span> <span class="font-semibold text-slate-900" x-text="form.nama_ibu || '-'"></span></div>
-                            <div><span class="text-slate-400 block text-xs">No. WA Kontak:</span> <span class="font-mono text-emerald-800 font-bold tabular-nums" x-text="form.no_hp_ayah || form.no_hp_ibu || form.telepon || '-'"></span></div>
+                            <div class="col-span-2"><span class="text-slate-400 block text-xs">No. WA Kontak:</span> <span class="font-mono text-emerald-800 font-bold tabular-nums" x-text="form.no_hp_ayah || form.no_hp_ibu || form.telepon || '-'"></span></div>
+                        </div>
+                    </div>
+
+                    <!-- Berkas Dokumen -->
+                    <div class="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-200/60 pb-1.5">
+                            <span class="font-bold text-slate-900 uppercase tracking-wider text-xs">Berkas Terlampir</span>
+                            <button type="button" @click="step = 4" class="text-slate-900 font-bold hover:underline">Ubah</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span :class="files.foto ? 'text-emerald-600 font-bold' : 'text-slate-400'">• Pas Foto:</span>
+                                <span class="truncate" x-text="files.foto || 'Belum dilampirkan'"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span :class="files.kk ? 'text-emerald-600 font-bold' : 'text-slate-400'">• Kartu Keluarga:</span>
+                                <span class="truncate" x-text="files.kk || 'Belum dilampirkan'"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span :class="files.akta ? 'text-emerald-600 font-bold' : 'text-slate-400'">• Akta Kelahiran:</span>
+                                <span class="truncate" x-text="files.akta || 'Belum dilampirkan'"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span :class="files.ijazah ? 'text-emerald-600 font-bold' : 'text-slate-400'">• Ijazah/SKL:</span>
+                                <span class="truncate" x-text="files.ijazah || 'Belum dilampirkan'"></span>
+                            </div>
                         </div>
                     </div>
 
@@ -558,7 +667,7 @@
                                required 
                                class="w-5 h-5 text-slate-900 rounded border-slate-300 focus:ring-slate-900 mt-0.5">
                         <span class="text-xs sm:text-sm leading-relaxed">
-                            Saya menyatakan dengan sesungguhnya bahwa seluruh data yang telah diisi adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong>.
+                            Saya menyatakan dengan sesungguhnya bahwa seluruh data dan berkas yang telah diisi adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong>.
                         </span>
                     </label>
                 </div>
@@ -576,7 +685,7 @@
                 <button type="button" 
                         x-show="step > 1" 
                         @click="prevStep()" 
-                        class="px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5">
+                        class="px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 text-slate-700 text-xs sm:text-sm font-bold hover:bg-slate-100 transition-colors flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
@@ -592,7 +701,7 @@
                     <button type="button" 
                             x-show="step < 5" 
                             @click="nextStep()" 
-                            class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors flex items-center gap-2">
+                            class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors flex items-center gap-2">
                         <span>Lanjut Langkah Berikutnya</span>
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -602,7 +711,7 @@
                     <button type="submit" 
                             x-show="step === 5" 
                             :disabled="!form.agree || isSubmitting"
-                            class="px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-black shadow-sm transition-colors flex items-center gap-2">
+                            class="px-6 sm:px-7 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-black shadow-sm transition-colors flex items-center gap-2">
                         <svg x-show="!isSubmitting" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
@@ -626,10 +735,17 @@ function spmbRegisterForm() {
         isSubmitting: false,
         stepTitles: {
             1: 'Pilih Jalur Pendaftaran',
-            2: 'Data Diri Calon Siswa',
-            3: 'Data Asal Sekolah (SMP/MTs)',
-            4: 'Data Orang Tua / Wali',
-            5: 'Konfirmasi & Kirim Formulir'
+            2: 'Data Diri & Asal Sekolah',
+            3: 'Data Orang Tua / Wali',
+            4: 'Upload Berkas Persyaratan',
+            5: 'Review & Kirim Formulir'
+        },
+        files: {
+            foto: '',
+            kk: '',
+            akta: '',
+            ijazah: '',
+            sertifikat: ''
         },
         form: {
             jalur_id: '{{ old('jalur_id', $jalurs->first()?->id ?? '') }}',
@@ -714,6 +830,10 @@ function spmbRegisterForm() {
                     alert('Tanggal lahir wajib diisi.');
                     return false;
                 }
+                if (!this.form.asal_sekolah.trim()) {
+                    alert('Nama sekolah asal (SMP/MTs) wajib diisi.');
+                    return false;
+                }
                 if (!this.form.alamat.trim()) {
                     alert('Alamat domisili tempat tinggal wajib diisi.');
                     return false;
@@ -721,13 +841,6 @@ function spmbRegisterForm() {
                 return true;
             }
             if (this.step === 3) {
-                if (!this.form.asal_sekolah.trim()) {
-                    alert('Nama sekolah asal (SMP/MTs) wajib diisi.');
-                    return false;
-                }
-                return true;
-            }
-            if (this.step === 4) {
                 if (!this.form.nama_ayah.trim()) {
                     alert('Nama ayah kandung wajib diisi.');
                     return false;
