@@ -9,24 +9,24 @@
 <div x-data="spmbRegisterForm()" class="space-y-4 pb-20">
 
     <!-- REASSURING HERO HEADER CARD -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-3">
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-2.5">
         <div class="flex items-center justify-between flex-wrap gap-2">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-semibold">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-xs font-semibold">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span>T.A {{ $sistemSettings['tahun_ajaran'] ?? '2026/2027' }} &bull; {{ $sistemSettings['gelombang'] ?? 'Gelombang I' }}</span>
             </span>
             
-            <span class="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+            <span class="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-lg">
                 Estimasi No: <strong class="text-slate-900">{{ $nextNumber }}</strong>
             </span>
         </div>
 
         <div>
-            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
                 Pendaftaran Calon Siswa Baru
             </h1>
-            <p class="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Silakan lengkapi formulir 5 langkah berikut. Data dapat diperiksa kembali sebelum dikirimkan.
+            <p class="mt-0.5 text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Lengkapi 5 langkah formulir di bawah ini. Data dapat diperiksa kembali sebelum dikirim.
             </p>
         </div>
     </div>

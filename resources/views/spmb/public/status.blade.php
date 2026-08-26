@@ -210,7 +210,7 @@
                     <span>Cetak Bukti Pendaftaran</span>
                 </a>
 
-                <a href="https://wa.me/6281234567890?text=Halo%20Panitia%20SPMB%2C%20saya%20ingin%20konfirmasi%20status%20pendaftaran%20dengan%20No%3A%20{{ $pendaftar->no_pendaftaran }}" 
+                <a href="https://wa.me/6283863125827?text=Halo%20Panitia%20SPMB%2C%20saya%20ingin%20konfirmasi%20status%20pendaftaran%20dengan%20No%3A%20{{ $pendaftar->no_pendaftaran }}" 
                    target="_blank"
                    class="px-4 py-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-bold text-xs sm:text-sm transition-colors inline-flex items-center gap-1.5">
                     <span>Hubungi Panitia WA</span>
