@@ -38,12 +38,12 @@
         </a>
 
         <!-- 5. Update Kelas -->
-        <a href="{{ route('spmb.kelas') }}" 
-           class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap {{ request()->routeIs('spmb.kelas') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+        <a href="{{ route('master-data.kelas') }}" 
+           class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap {{ request()->routeIs('master-data.kelas') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 01-.491-6.347A48.627 48.627 0 0112 3c4.229 0 8.243.54 11.231 1.503.228 2.056.064 4.19-.49 6.347m-18.482 0a60.187 60.187 0 00-1.257 5.273c-.271 1.52.88 2.877 2.422 2.877h16.152c1.542 0 2.693-1.357 2.422-2.877a60.186 60.186 0 00-1.257-5.273m-18.482 0c2.478.45 5.09.689 7.741.689s5.263-.239 7.741-.689" />
             </svg>
-            Update Kelas
+            Pengelolaan Kelas
         </a>
 
         <!-- 6. Set SPMB -->

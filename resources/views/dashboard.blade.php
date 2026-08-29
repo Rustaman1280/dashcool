@@ -178,7 +178,7 @@
                         <span class="text-xs font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full">Perlu Cek</span>
                     </a>
 
-                    <a href="{{ route('spmb.kelas') }}" class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60 transition-colors">
+                    <a href="{{ route('master-data.kelas') }}" class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60 transition-colors">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                             <span class="text-xs font-semibold text-slate-800">Penempatan Rombel / Kelas</span>

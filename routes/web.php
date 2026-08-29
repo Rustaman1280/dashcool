@@ -62,9 +62,9 @@ Route::middleware(['auth.custom'])->group(function () {
         Route::get('/rekap', [SpmbController::class, 'rekap'])->name('rekap');
         Route::get('/rekap/export', [SpmbController::class, 'exportRekap'])->name('rekap.export');
 
-        // 4. Update Kelas SPMB Routes
-        Route::get('/update-kelas', [SpmbController::class, 'kelas'])->name('kelas');
-        Route::post('/update-kelas', [SpmbController::class, 'updateKelas'])->name('kelas.update');
+        // 4. Update Kelas SPMB Routes (MOVED TO MASTER DATA)
+        // Route::get('/update-kelas', [SpmbController::class, 'kelas'])->name('kelas');
+        // Route::post('/update-kelas', [SpmbController::class, 'updateKelas'])->name('kelas.update');
 
         // 5. Set SPMB & Pengaturan Jalur Routes
         Route::get('/pengaturan', [SpmbController::class, 'pengaturan'])->name('pengaturan');
@@ -76,6 +76,10 @@ Route::middleware(['auth.custom'])->group(function () {
 
     Route::prefix('master-data')->name('master-data.')->group(function () {
         Route::get('/', [MasterDataController::class, 'index'])->name('index');
+        
+        // Kelas routes
+        Route::get('/kelas', [MasterDataController::class, 'kelas'])->name('kelas');
+        Route::post('/kelas', [MasterDataController::class, 'updateKelas'])->name('kelas.update');
 
         // Tahun Ajaran Routes
         Route::post('/tahun-ajaran', [MasterDataController::class, 'storeTahunAjaran'])->name('tahun-ajaran.store');

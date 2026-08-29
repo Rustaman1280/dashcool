@@ -435,64 +435,6 @@ class SpmbController extends Controller
     }
 
     /**
-     * 3. UPDATE KELAS SPMB - Halaman Kelola & Alokasi Kelas
-     */
-    public function kelas(Request $request)
-    {
-        $query = Pendaftaran::with('jalur')->where('status', 'diterima');
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('nama_lengkap', 'like', "%{$search}%")
-                  ->orWhere('nisn', 'like', "%{$search}%")
-                  ->orWhere('no_pendaftaran', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('kelas')) {
-            if ($request->kelas === 'belum') {
-                $query->whereNull('kelas')->orWhere('kelas', '');
-            } else {
-                $query->where('kelas', $request->kelas);
-            }
-        }
-
-        $diterimaList = $query->paginate(15)->withQueryString();
-
-        $totalDiterima = Pendaftaran::where('status', 'diterima')->count();
-        $teralokasi = Pendaftaran::where('status', 'diterima')->whereNotNull('kelas')->where('kelas', '!=', '')->count();
-        $belumAlokasi = $totalDiterima - $teralokasi;
-
-        $existingKelas = Pendaftaran::whereNotNull('kelas')->where('kelas', '!=', '')->pluck('kelas')->toArray();
-        $defaultKelas = ['X IPA 1', 'X IPA 2', 'X IPS 1', 'X IPS 2', 'VII A', 'VII B', 'VII C', 'X RPL 1', 'X TITL 1'];
-        $daftarKelas = array_values(array_unique(array_merge($defaultKelas, $existingKelas)));
-        sort($daftarKelas);
-
-        return view('spmb.kelas', compact('diterimaList', 'totalDiterima', 'teralokasi', 'belumAlokasi', 'daftarKelas'));
-    }
-
-    /**
-     * 3. UPDATE KELAS SPMB - Process Update Kelas Single / Batch
-     */
-    public function updateKelas(Request $request)
-    {
-        $request->validate([
-            'pendaftaran_ids' => 'required|array',
-            'pendaftaran_ids.*' => 'exists:spmb,id',
-            'kelas' => 'required|string|max:50',
-        ]);
-
-        $ids = $request->pendaftaran_ids;
-        $kelas = $request->kelas;
-
-        Pendaftaran::whereIn('id', $ids)->update(['kelas' => $kelas]);
-
-        $count = count($ids);
-        return back()->with('success', "Berhasil memperbarui alokasi kelas untuk {$count} calon siswa ke kelas {$kelas}.");
-    }
-
-    /**
      * 4. SET SPMB - Pengaturan Sistem SPMB & Jalur
      */
     public function pengaturan()

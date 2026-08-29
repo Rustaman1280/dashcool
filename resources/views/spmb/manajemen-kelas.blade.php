@@ -1,12 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Hallmark · macrostructure: Workbench · genre: modern-minimal · tone: soft · designed-as-app --}}
 <div class="space-y-6" x-data="{ selectedIds: [], selectedKelas: '', selectAll: false, addCustomModalOpen: false }">
     
-    <!-- SUB NAVIGATION BAR -->
-    @include('spmb.partials.nav')
-
     <!-- PAGE TITLE & QUICK ACTIONS (MATCHING SPMB DASHBOARD) -->
     <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div class="space-y-1.5">
@@ -15,7 +11,7 @@
                 <span>Penetapan Rombongan Belajar (Rombel) Kelas Baru</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Update Kelas Calon Siswa Diterima
+                Pengelolaan Kelas Calon Siswa
             </h1>
             <p class="text-sm text-slate-500 max-w-2xl leading-relaxed">
                 Tentukan dan perbarui alokasi kelas bagi calon peserta didik yang telah dinyatakan lulus seleksi.
@@ -85,7 +81,7 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         
         <!-- Filter Form -->
-        <form method="GET" action="{{ route('spmb.kelas') }}" class="flex items-center gap-3 flex-wrap flex-1">
+        <form method="GET" action="{{ route('master-data.kelas') }}" class="flex items-center gap-3 flex-wrap flex-1">
             <div class="relative flex-1 min-w-[200px]">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, NISN, no. pendaftaran..." 
                        class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-800 transition-colors">
@@ -102,7 +98,7 @@
         </form>
 
         <!-- Bulk/Batch Assign Form -->
-        <form action="{{ route('spmb.kelas.update') }}" method="POST" class="flex items-center gap-2" x-show="selectedIds.length > 0" x-cloak>
+        <form action="{{ route('master-data.kelas.update') }}" method="POST" class="flex items-center gap-2" x-show="selectedIds.length > 0" x-cloak>
             @csrf
             <template x-for="id in selectedIds" :key="id">
                 <input type="hidden" name="pendaftaran_ids[]" :value="id">
@@ -186,7 +182,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <!-- Single Quick Assign Form -->
-                                <form action="{{ route('spmb.kelas.update') }}" method="POST" class="inline-flex items-center gap-1.5">
+                                <form action="{{ route('master-data.kelas.update') }}" method="POST" class="inline-flex items-center gap-1.5">
                                     @csrf
                                     <input type="hidden" name="pendaftaran_ids[]" value="{{ $p->id }}">
                                     <select name="kelas" onchange="this.form.submit()" class="px-2.5 py-1 text-xs border border-slate-200 rounded-lg bg-white font-semibold text-slate-700 focus:ring-2 focus:ring-slate-900/10">
@@ -237,7 +233,7 @@
                 </button>
             </div>
 
-            <form action="{{ route('spmb.kelas.update') }}" method="POST" class="space-y-4 text-xs">
+            <form action="{{ route('master-data.kelas.update') }}" method="POST" class="space-y-4 text-xs">
                 @csrf
 
                 <div>
