@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@php
-    $headerTitle = 'Dashboard SPMB Online';
-@endphp
-
 @section('content')
 {{-- Hallmark · macrostructure: Workbench · genre: modern-minimal · tone: soft · designed-as-app --}}
 <div class="space-y-6">

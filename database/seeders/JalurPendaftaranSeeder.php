@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\JalurPendaftaran;
+use App\Models\SpmbSet;
 
 class JalurPendaftaranSeeder extends Seeder
 {
@@ -54,7 +54,7 @@ class JalurPendaftaranSeeder extends Seeder
             if ($activeTa) {
                 $j['tahun_ajaran_id'] = $activeTa->id;
             }
-            JalurPendaftaran::updateOrCreate(['kode_jalur' => $j['kode_jalur']], $j);
+            SpmbSet::updateOrCreate(['kode_jalur' => $j['kode_jalur']], $j);
         }
     }
 }

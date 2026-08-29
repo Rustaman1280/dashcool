@@ -4,17 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Pendaftaran;
-use App\Models\JalurPendaftaran;
+use App\Models\SpmbSet;
 use Carbon\Carbon;
 
 class PendaftaranSeeder extends Seeder
 {
     public function run(): void
     {
-        $reg = JalurPendaftaran::where('kode_jalur', 'REG')->first();
-        $prs = JalurPendaftaran::where('kode_jalur', 'PRS')->first();
-        $afr = JalurPendaftaran::where('kode_jalur', 'AFR')->first();
-        $mts = JalurPendaftaran::where('kode_jalur', 'MTS')->first();
+        $reg = SpmbSet::where('kode_jalur', 'REG')->first();
+        $prs = SpmbSet::where('kode_jalur', 'PRS')->first();
+        $afr = SpmbSet::where('kode_jalur', 'AFR')->first();
+        $mts = SpmbSet::where('kode_jalur', 'MTS')->first();
 
         $data = [
             [

@@ -34,11 +34,6 @@ class TahunAjaran extends Model
         return $this->hasMany(SpmbSet::class, 'tahun_ajaran_id');
     }
 
-    public function jalurs()
-    {
-        return $this->hasMany(JalurPendaftaran::class, 'tahun_ajaran_id');
-    }
-
     /**
      * Scope untuk tahun ajaran yang aktif
      */

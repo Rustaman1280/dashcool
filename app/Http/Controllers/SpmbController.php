@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
-use App\Models\JalurPendaftaran;
+use App\Models\SpmbSet;
 use App\Models\TahunAjaran;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -50,7 +50,7 @@ class SpmbController extends Controller
         ];
 
         // Fetch Jalur Pendaftaran with live counts
-        $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
+        $jalurs = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->get();
         $kuotas = $jalurs->map(function ($j) {
             $terisi = $j->pendaftarans_count;
             $persen = $j->kuota > 0 ? round(($terisi / $j->kuota) * 100, 1) : 0;
@@ -143,9 +143,9 @@ class SpmbController extends Controller
      */
     public function create()
     {
-        $jalurs = JalurPendaftaran::with('tahunAjaran')->where('status', 'aktif')->get();
+        $jalurs = SpmbSet::with('tahunAjaran')->where('status', 'aktif')->get();
         if ($jalurs->isEmpty()) {
-            $jalurs = JalurPendaftaran::with('tahunAjaran')->get();
+            $jalurs = SpmbSet::with('tahunAjaran')->get();
         }
 
         $nextNumber = 'SPMB-' . date('Y') . '-' . sprintf('%03d', Pendaftaran::count() + 1);
@@ -258,7 +258,7 @@ class SpmbController extends Controller
         }
 
         $pendaftarList = $query->latest()->paginate(10)->withQueryString();
-        $jalurList = JalurPendaftaran::all();
+        $jalurList = SpmbSet::all();
 
         $counts = [
             'total' => Pendaftaran::count(),
@@ -342,7 +342,7 @@ class SpmbController extends Controller
         ];
 
         // Rekap Jalur
-        $jalurs = JalurPendaftaran::withCount('pendaftarans')->get();
+        $jalurs = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->get();
         $rekapJalur = $jalurs->map(function ($j) {
             $terisi = $j->pendaftarans_count;
             $persen = $j->kuota > 0 ? round(($terisi / $j->kuota) * 100, 1) : 0;
@@ -383,7 +383,7 @@ class SpmbController extends Controller
             ];
         });
 
-        $jalurList = JalurPendaftaran::all();
+        $jalurList = SpmbSet::all();
 
         return view('spmb.rekap', compact(
             'totalPendaftar', 'rekapStatus', 'rekapJalur', 
@@ -497,8 +497,8 @@ class SpmbController extends Controller
      */
     public function pengaturan()
     {
-        $jalurs = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->get();
-        $daftarTahunAjaran = TahunAjaran::withCount('jalurs')->orderBy('is_active', 'desc')->orderBy('nama', 'desc')->get();
+        $jalurs = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->get();
+        $daftarTahunAjaran = TahunAjaran::withCount('spmbSets')->orderBy('is_active', 'desc')->orderBy('nama', 'desc')->get();
         $activeTa = TahunAjaran::where('is_active', true)->first();
 
         $sistemSettings = Session::get('spmb_settings', [
@@ -579,7 +579,7 @@ class SpmbController extends Controller
             $data['tahun_ajaran_id'] = $activeTa?->id;
         }
 
-        JalurPendaftaran::create($data);
+        SpmbSet::create($data);
 
         return back()->with('success', 'Jalur pendaftaran baru berhasil ditambahkan.');
     }
@@ -589,7 +589,7 @@ class SpmbController extends Controller
      */
     public function updateJalur(Request $request, $id)
     {
-        $jalur = JalurPendaftaran::findOrFail($id);
+        $jalur = SpmbSet::findOrFail($id);
 
         $request->validate([
             'tahun_ajaran_id' => 'nullable|exists:tahun_ajaran,id',
@@ -612,7 +612,7 @@ class SpmbController extends Controller
      */
     public function destroyJalur($id)
     {
-        $jalur = JalurPendaftaran::findOrFail($id);
+        $jalur = SpmbSet::findOrFail($id);
 
         if ($jalur->pendaftarans()->count() > 0) {
             return back()->with('error', "Jalur {$jalur->nama_jalur} tidak dapat dihapus karena sudah memiliki pendaftar terdaftar.");
@@ -621,97 +621,6 @@ class SpmbController extends Controller
         $jalur->delete();
 
         return back()->with('success', 'Jalur pendaftaran berhasil dihapus.');
-    }
-
-    /**
-     * Store new Tahun Ajaran
-     */
-    public function storeTahunAjaran(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:20|unique:tahun_ajaran,nama',
-            'semester' => 'required|in:Ganjil,Genap',
-            'periode_mulai' => 'nullable|date',
-            'periode_selesai' => 'nullable|date|after_or_equal:periode_mulai',
-            'keterangan' => 'nullable|string|max:255',
-            'is_active' => 'nullable|boolean',
-        ]);
-
-        $isActive = $request->boolean('is_active');
-        if ($isActive) {
-            TahunAjaran::query()->update(['is_active' => false]);
-        }
-
-        TahunAjaran::create([
-            'nama' => $request->nama,
-            'semester' => $request->semester,
-            'periode_mulai' => $request->periode_mulai,
-            'periode_selesai' => $request->periode_selesai,
-            'keterangan' => $request->keterangan,
-            'is_active' => $isActive,
-        ]);
-
-        return back()->with('success', "Tahun Ajaran {$request->nama} ({$request->semester}) berhasil ditambahkan.");
-    }
-
-    /**
-     * Update Tahun Ajaran
-     */
-    public function updateTahunAjaran(Request $request, $id)
-    {
-        $ta = TahunAjaran::findOrFail($id);
-
-        $request->validate([
-            'nama' => 'required|string|max:20|unique:tahun_ajaran,nama,' . $id,
-            'semester' => 'required|in:Ganjil,Genap',
-            'periode_mulai' => 'nullable|date',
-            'periode_selesai' => 'nullable|date|after_or_equal:periode_mulai',
-            'keterangan' => 'nullable|string|max:255',
-        ]);
-
-        $ta->update($request->only(['nama', 'semester', 'periode_mulai', 'periode_selesai', 'keterangan']));
-
-        return back()->with('success', "Data Tahun Ajaran {$ta->nama} berhasil diperbarui.");
-    }
-
-    /**
-     * Toggle or Set Active Tahun Ajaran
-     */
-    public function toggleActiveTahunAjaran($id)
-    {
-        $ta = TahunAjaran::findOrFail($id);
-
-        // Set all to inactive then activate this one
-        TahunAjaran::query()->update(['is_active' => false]);
-        $ta->update(['is_active' => true]);
-
-        // Update session as well
-        $settings = Session::get('spmb_settings', []);
-        $settings['tahun_ajaran_id'] = $ta->id;
-        $settings['tahun_ajaran'] = $ta->nama;
-        Session::put('spmb_settings', $settings);
-
-        return back()->with('success', "Tahun Ajaran {$ta->nama} ({$ta->semester}) telah diset sebagai Tahun Ajaran AKTIF.");
-    }
-
-    /**
-     * Delete Tahun Ajaran
-     */
-    public function destroyTahunAjaran($id)
-    {
-        $ta = TahunAjaran::findOrFail($id);
-
-        if ($ta->jalurs()->count() > 0) {
-            return back()->with('error', "Tahun Ajaran {$ta->nama} tidak dapat dihapus karena masih terhubung dengan {$ta->jalurs()->count()} jalur pendaftaran.");
-        }
-
-        if ($ta->is_active) {
-            return back()->with('error', "Tahun Ajaran aktif tidak dapat dihapus. Silakan aktifkan tahun ajaran lain terlebih dahulu.");
-        }
-
-        $ta->delete();
-
-        return back()->with('success', "Tahun Ajaran {$ta->nama} berhasil dihapus.");
     }
 
     /**
@@ -727,18 +636,18 @@ class SpmbController extends Controller
     {
         $activeTa = TahunAjaran::where('is_active', true)->first();
         
-        $jalursQuery = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif');
+        $jalursQuery = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif');
         if ($activeTa) {
             $jalurs = $jalursQuery->where('tahun_ajaran_id', $activeTa->id)->get();
             if ($jalurs->isEmpty()) {
-                $jalurs = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif')->get();
+                $jalurs = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->where('status', 'aktif')->get();
             }
         } else {
             $jalurs = $jalursQuery->get();
         }
 
         if ($jalurs->isEmpty()) {
-            $jalurs = JalurPendaftaran::with('tahunAjaran')->withCount('pendaftarans')->get();
+            $jalurs = SpmbSet::with('tahunAjaran')->withCount('pendaftarans')->get();
         }
 
         $sistemSettings = Session::get('spmb_settings', [

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\TahunAjaran;
-use App\Models\JalurPendaftaran;
+use App\Models\SpmbSet;
 
 class TahunAjaranSeeder extends Seeder
 {
@@ -44,7 +44,7 @@ class TahunAjaranSeeder extends Seeder
         // Link existing Jalur to active Tahun Ajaran
         $activeTa = TahunAjaran::where('is_active', true)->first();
         if ($activeTa) {
-            JalurPendaftaran::whereNull('tahun_ajaran_id')->update([
+            SpmbSet::whereNull('tahun_ajaran_id')->update([
                 'tahun_ajaran_id' => $activeTa->id,
             ]);
         }

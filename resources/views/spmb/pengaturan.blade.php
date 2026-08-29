@@ -1,19 +1,11 @@
 @extends('layouts.app')
 
-@php
-    $headerTitle = 'Set SPMB - Pengaturan Sistem & Jalur Pendaftaran';
-@endphp
-
 @section('content')
 <div class="space-y-8" x-data="{ 
     createModalOpen: false, 
     editModalOpen: false, 
     deleteModalOpen: false, 
-    selectedJalur: null,
-    createTaModalOpen: false,
-    editTaModalOpen: false,
-    deleteTaModalOpen: false,
-    selectedTa: null
+    selectedJalur: null
 }">
     
     <!-- SUB NAVIGATION BAR -->
@@ -35,12 +27,6 @@
         </div>
 
         <div class="flex items-center gap-3 flex-wrap flex-shrink-0">
-            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-slate-800 text-xs sm:text-sm font-semibold transition-colors">
-                <svg class="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>+ Tahun Ajaran</span>
-            </button>
             <button @click="createModalOpen = true" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
                 <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -257,101 +243,6 @@
         @endforeach
     </x-data-table>
 
-    <!-- 3. MASTER DATA TAHUN AJARAN -->
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h3 class="text-base font-bold text-gray-900">3. Master Data & Relasi Tahun Ajaran</h3>
-                <p class="text-xs text-gray-500">Daftar entitas tahun ajaran sekolah yang terhubung dengan modul SPMB dan jalur pendaftaran</p>
-            </div>
-            <button @click="createTaModalOpen = true" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-bold text-xs shadow-sm transition-all self-start sm:self-auto">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Tambah Tahun Ajaran
-            </button>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                    <tr class="bg-gray-50/80 border-b border-gray-100 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                        <th class="px-6 py-3.5">Tahun Ajaran</th>
-                        <th class="px-6 py-3.5">Semester</th>
-                        <th class="px-6 py-3.5">Periode Kalender</th>
-                        <th class="px-6 py-3.5">Jalur Terhubung</th>
-                        <th class="px-6 py-3.5">Status</th>
-                        <th class="px-6 py-3.5">Keterangan</th>
-                        <th class="px-6 py-3.5 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($daftarTahunAjaran as $ta)
-                        <tr class="hover:bg-gray-50/60 transition-colors {{ $ta->is_active ? 'bg-indigo-50/20' : '' }}">
-                            <td class="px-6 py-4 font-bold text-gray-900 whitespace-nowrap">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full {{ $ta->is_active ? 'bg-emerald-500' : 'bg-gray-300' }}"></span>
-                                    <span class="font-mono text-sm">{{ $ta->nama }}</span>
-                                    @if($ta->is_active)
-                                        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">AKTIF UTAMA</span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 font-semibold text-gray-700 whitespace-nowrap">
-                                <span class="px-2.5 py-1 rounded-lg {{ $ta->semester == 'Ganjil' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700' }} font-bold">
-                                    Semester {{ $ta->semester }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
-                                {{ $ta->periode_mulai ? $ta->periode_mulai->format('d M Y') : '-' }} &mdash; {{ $ta->periode_selesai ? $ta->periode_selesai->format('d M Y') : '-' }}
-                            </td>
-                            <td class="px-6 py-4 font-semibold text-gray-800 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1 font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">
-                                    {{ $ta->jalurs_count }} Jalur
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($ta->is_active)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-bold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
-                                    </span>
-                                @else
-                                    <form action="{{ route('spmb.pengaturan.tahun-ajaran.toggle-active', $ta->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors" title="Jadikan Tahun Ajaran Aktif">
-                                            Nonaktif (Set Aktif)
-                                        </button>
-                                    </form>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-gray-500 max-w-xs truncate">
-                                {{ $ta->keterangan ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right space-x-1.5">
-                                <button @click="selectedTa = {{ $ta->toJson() }}; editTaModalOpen = true" 
-                                        class="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 font-semibold transition-colors">
-                                    Edit
-                                </button>
-                                @if(!$ta->is_active && $ta->jalurs_count == 0)
-                                    <button @click="selectedTa = {{ $ta->toJson() }}; deleteTaModalOpen = true" 
-                                            class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 font-semibold transition-colors">
-                                        Hapus
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-400">
-                                Belum ada data Tahun Ajaran.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
     <!-- CREATE JALUR MODAL -->
     <div x-show="createModalOpen" 
          x-cloak
@@ -560,193 +451,6 @@
                         </button>
                         <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-xs font-bold text-white shadow-sm">
                             Ya, Hapus Jalur
-                        </button>
-                    </div>
-                </form>
-            </template>
-        </div>
-    </div>
-
-    <!-- CREATE TAHUN AJARAN MODAL -->
-    <div x-show="createTaModalOpen" 
-         x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        
-        <div @click.outside="createTaModalOpen = false" 
-             class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-gray-900">Tambah Tahun Ajaran Baru</h3>
-                        <p class="text-[11px] text-gray-400">Buat entitas tahun pelajaran baru untuk SPMB</p>
-                    </div>
-                </div>
-                <button @click="createTaModalOpen = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <form action="{{ route('spmb.pengaturan.tahun-ajaran.store') }}" method="POST" class="space-y-4 text-xs">
-                @csrf
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
-                        <input type="text" name="nama" required placeholder="e.g. 2027/2028" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Semester <span class="text-rose-500">*</span></label>
-                        <select name="semester" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold">
-                            <option value="Ganjil">Semester Ganjil</option>
-                            <option value="Genap">Semester Genap</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Mulai</label>
-                        <input type="date" name="periode_mulai" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Selesai</label>
-                        <input type="date" name="periode_selesai" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
-                    <textarea name="keterangan" rows="2" placeholder="Catatan opsional mengenai tahun ajaran ini..." class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl"></textarea>
-                </div>
-
-                <div class="flex items-center gap-2 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
-                    <input type="checkbox" name="is_active" id="create_is_active" value="1" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
-                    <label for="create_is_active" class="font-semibold text-gray-800 cursor-pointer text-xs">
-                        Jadikan sebagai Tahun Ajaran Aktif Utama
-                    </label>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
-                    <button type="button" @click="createTaModalOpen = false" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold text-gray-700">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-white shadow-sm">Simpan Tahun Ajaran</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- EDIT TAHUN AJARAN MODAL -->
-    <div x-show="editTaModalOpen" 
-         x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        
-        <div @click.outside="editTaModalOpen = false" 
-             class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                <h3 class="text-base font-bold text-gray-900">Edit Tahun Ajaran</h3>
-                <button @click="editTaModalOpen = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <template x-if="selectedTa">
-                <form :action="'{{ url('/spmb/pengaturan/tahun-ajaran') }}/' + selectedTa.id" method="POST" class="space-y-4 text-xs">
-                    @csrf
-                    @method('PUT')
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Tahun Ajaran <span class="text-rose-500">*</span></label>
-                            <input type="text" name="nama" x-model="selectedTa.nama" required class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Semester <span class="text-rose-500">*</span></label>
-                            <select name="semester" x-model="selectedTa.semester" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl font-semibold">
-                                <option value="Ganjil">Semester Ganjil</option>
-                                <option value="Genap">Semester Genap</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Mulai</label>
-                            <input type="date" name="periode_mulai" x-model="selectedTa.periode_mulai ? selectedTa.periode_mulai.substring(0,10) : ''" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Periode Selesai</label>
-                            <input type="date" name="periode_selesai" x-model="selectedTa.periode_selesai ? selectedTa.periode_selesai.substring(0,10) : ''" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-gray-700 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
-                        <textarea name="keterangan" x-model="selectedTa.keterangan" rows="2" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl"></textarea>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
-                        <button type="button" @click="editTaModalOpen = false" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold text-gray-700">Batal</button>
-                        <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-white shadow-sm">Simpan Perubahan</button>
-                    </div>
-                </form>
-            </template>
-        </div>
-    </div>
-
-    <!-- DELETE TAHUN AJARAN MODAL -->
-    <div x-show="deleteTaModalOpen" 
-         x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        
-        <div @click.outside="deleteTaModalOpen = false" 
-             class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                <h3 class="text-base font-bold text-rose-600">Konfirmasi Hapus Tahun Ajaran</h3>
-                <button @click="deleteTaModalOpen = false" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <template x-if="selectedTa">
-                <form :action="'{{ url('/spmb/pengaturan/tahun-ajaran') }}/' + selectedTa.id" method="POST" class="space-y-4">
-                    @csrf
-                    @method('DELETE')
-
-                    <p class="text-xs text-gray-600">
-                        Apakah Anda yakin ingin menghapus Tahun Ajaran <span class="font-bold text-gray-900" x-text="selectedTa.nama"></span>? Data yang sudah terhapus tidak dapat dikembalikan.
-                    </p>
-
-                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
-                        <button type="button" @click="deleteTaModalOpen = false" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700">
-                            Batal
-                        </button>
-                        <button type="submit" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-xs font-bold text-white shadow-sm">
-                            Ya, Hapus Tahun Ajaran
                         </button>
                     </div>
                 </form>

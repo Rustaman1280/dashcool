@@ -46,6 +46,6 @@ class Pendaftaran extends Model
 
     public function jalur()
     {
-        return $this->belongsTo(JalurPendaftaran::class, 'jalur_id');
+        return $this->belongsTo(SpmbSet::class, 'jalur_id');
     }
 }

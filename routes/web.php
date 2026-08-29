@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SpmbController;
+use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\AuthController;
 
 // Guest Routes
@@ -71,12 +72,16 @@ Route::middleware(['auth.custom'])->group(function () {
         Route::put('/pengaturan/{id}', [SpmbController::class, 'updateJalur'])->name('pengaturan.update');
         Route::delete('/pengaturan/{id}', [SpmbController::class, 'destroyJalur'])->name('pengaturan.destroy');
         Route::post('/pengaturan/sistem', [SpmbController::class, 'updateSistem'])->name('pengaturan.sistem');
+    });
+
+    Route::prefix('master-data')->name('master-data.')->group(function () {
+        Route::get('/', [MasterDataController::class, 'index'])->name('index');
 
         // Tahun Ajaran Routes
-        Route::post('/pengaturan/tahun-ajaran', [SpmbController::class, 'storeTahunAjaran'])->name('pengaturan.tahun-ajaran.store');
-        Route::put('/pengaturan/tahun-ajaran/{id}', [SpmbController::class, 'updateTahunAjaran'])->name('pengaturan.tahun-ajaran.update');
-        Route::delete('/pengaturan/tahun-ajaran/{id}', [SpmbController::class, 'destroyTahunAjaran'])->name('pengaturan.tahun-ajaran.destroy');
-        Route::post('/pengaturan/tahun-ajaran/{id}/toggle-active', [SpmbController::class, 'toggleActiveTahunAjaran'])->name('pengaturan.tahun-ajaran.toggle-active');
+        Route::post('/tahun-ajaran', [MasterDataController::class, 'storeTahunAjaran'])->name('tahun-ajaran.store');
+        Route::put('/tahun-ajaran/{id}', [MasterDataController::class, 'updateTahunAjaran'])->name('tahun-ajaran.update');
+        Route::delete('/tahun-ajaran/{id}', [MasterDataController::class, 'destroyTahunAjaran'])->name('tahun-ajaran.destroy');
+        Route::post('/tahun-ajaran/{id}/toggle-active', [MasterDataController::class, 'toggleActiveTahunAjaran'])->name('tahun-ajaran.toggle-active');
     });
 
 });

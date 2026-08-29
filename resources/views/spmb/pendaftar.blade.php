@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@php
-    $headerTitle = 'Daftar Pendaftar SPMB';
-@endphp
-
 @section('content')
 <div class="space-y-6" x-data="{ quickModalOpen: false, selectedPendaftar: null, selectedStatus: '' }">
     

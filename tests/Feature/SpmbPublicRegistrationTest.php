@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Pendaftaran;
-use App\Models\JalurPendaftaran;
+use App\Models\SpmbSet;
 use App\Models\TahunAjaran;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -21,9 +21,9 @@ class SpmbPublicRegistrationTest extends TestCase
     /** @test */
     public function public_can_register_new_student_online()
     {
-        $jalur = JalurPendaftaran::first();
+        $jalur = SpmbSet::first();
         if (!$jalur) {
-            $jalur = JalurPendaftaran::create([
+            $jalur = SpmbSet::create([
                 'nama_jalur' => 'Jalur Reguler',
                 'kode_jalur' => 'REG',
                 'kuota' => 100,

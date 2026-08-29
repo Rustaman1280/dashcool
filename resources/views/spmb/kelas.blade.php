@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@php
-    $headerTitle = 'Update & Alokasi Kelas SPMB Online';
-@endphp
-
 @section('content')
 {{-- Hallmark · macrostructure: Workbench · genre: modern-minimal · tone: soft · designed-as-app --}}
 <div class="space-y-6" x-data="{ selectedIds: [], selectedKelas: '', selectAll: false, addCustomModalOpen: false }">
